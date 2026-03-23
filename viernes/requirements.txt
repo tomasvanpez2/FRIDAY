@@ -1,14 +1,9 @@
 opencv-python
 numpy
 mediapipe
-faster-whisper
 lancedb
 sentence-transformers
-openai-whisper
 Pillow
 google-generativeai
 google-genai
-sounddevice
 scipy
-SpeechRecognition
-pocketsphinx

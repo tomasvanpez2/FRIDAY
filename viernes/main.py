@@ -12,7 +12,6 @@ import sys
 from typing import NoReturn
 
 from viernes.core.ar_pipeline import ARPipeline
-from viernes.interaction.voice_handler import VoiceHandler
 from viernes.utils.logger import get_logger
 
 
@@ -27,22 +26,16 @@ def bucle_principal() -> None:
     - Gestionar la salida limpia al pulsar 'q' o Ctrl+C.
     """
     logger = get_logger()
-    logger.info("Arrancando VIERNES OS (ARPipeline + Gemini 2.5 Native Audio)")
+    logger.info("Arrancando VIERNES OS (solo ARPipeline)")
 
     pipeline = ARPipeline(logger=logger)
-    voice = VoiceHandler(get_frame_callback=pipeline.get_current_frame)
-
-    voice.on_response = lambda texto: pipeline.show_response(texto)
-
-    logger.info("Componentes inicializados; iniciando ARPipeline y VoiceHandler")
+    logger.info("Componentes inicializados; iniciando ARPipeline")
 
     try:
-        voice.start()
         pipeline.run()
     except KeyboardInterrupt:
         logger.info("Interrupción por teclado (Ctrl+C)")
     finally:
-        voice.stop()
         logger.info("VIERNES OS apagado correctamente")
 
 
