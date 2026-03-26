@@ -1,0 +1,82 @@
+ARQUITECTURAS DE SOFTWARE
+
+ARQUITECTURA MODULAR
+Un sistema modular divide la funcionalidad en módulos independientes con responsabilidades claras.
+Cada módulo expone una interfaz y oculta su implementación interna.
+El acoplamiento bajo entre módulos facilita el mantenimiento y las pruebas.
+La cohesión alta dentro de un módulo significa que sus componentes están relacionados.
+Los principios SOLID guían el diseño orientado a objetos: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+
+PIPELINES
+Un pipeline es una cadena de procesamiento donde la salida de cada etapa es la entrada de la siguiente.
+Los pipelines son ideales para procesamiento de datos, visión por computador y procesamiento de lenguaje.
+Cada etapa del pipeline debe ser independiente y reemplazable.
+El cuello de botella de un pipeline es la etapa más lenta — optimizar otras etapas no mejora el rendimiento total.
+
+SISTEMAS EN TIEMPO REAL
+Un sistema en tiempo real debe responder dentro de un tiempo máximo garantizado.
+Hard real-time: el incumplimiento del deadline es un fallo catastrófico.
+Soft real-time: el incumplimiento degrada el rendimiento pero no es catastrófico.
+Los sistemas de visión por computador a 15 FPS tienen un deadline de 66ms por frame.
+Separar el procesamiento pesado en hilos dedicados evita bloquear el loop principal.
+
+PATRONES DE CONCURRENCIA
+Productor-consumidor: un hilo produce datos, otro los consume a través de una cola thread-safe.
+Queue.Queue(maxsize=1) descarta datos viejos si el consumidor es lento — útil para datos de tiempo real donde el dato más reciente siempre es el relevante.
+Los locks (mutex) protegen secciones críticas del acceso concurrente.
+Los eventos (threading.Event) sincronizan hilos sin polling activo.
+El patrón actor: cada componente del sistema es un actor que recibe mensajes y responde.
+
+MACHINE LEARNING — CONCEPTOS FUNDAMENTALES
+
+REDES NEURONALES
+Una red neuronal es un grafo de operaciones matemáticas inspirado en el cerebro.
+Las capas densas (fully connected) conectan cada neurona con todas las de la capa siguiente.
+La función de activación introduce no linealidad. Sin ella, la red es equivalente a una sola capa lineal.
+ReLU: max(0, x). Rápida y efectiva. GELU: suavización de ReLU, usada en transformers.
+El dropout desactiva aleatoriamente neuronas durante entrenamiento para regularización.
+Batch normalization normaliza activaciones por batch para estabilizar el entrenamiento.
+
+ENTRENAMIENTO
+El objetivo del entrenamiento es minimizar una función de pérdida (loss).
+Cross-entropy loss mide la diferencia entre distribución predicha y real — usada para clasificación.
+MSE (Mean Squared Error) mide el error cuadrático medio — usada para regresión.
+CTC loss permite entrenar modelos de secuencia a secuencia sin alineación explícita.
+El gradiente indica la dirección de mayor crecimiento de la pérdida. El optimizador sigue la dirección opuesta.
+El learning rate controla el tamaño del paso de actualización. Demasiado grande: diverge. Demasiado pequeño: converge lento.
+Adam combina momentum y adaptación del learning rate — es el optimizador más usado.
+
+TRANSFORMERS
+Un transformer procesa secuencias usando mecanismos de atención en lugar de recurrencia.
+La atención permite que cada token "vea" todos los demás tokens de la secuencia simultáneamente.
+Query, Key, Value: la atención compara la query de un token con las keys de todos los tokens para calcular pesos de atención sobre sus values.
+Multi-head attention aplica atención en paralelo con diferentes proyecciones.
+Positional encoding añade información de posición ya que el transformer no tiene noción de orden intrínseca.
+LayerNorm normaliza las activaciones dentro de cada capa para estabilizar el entrenamiento.
+Feed-forward network: dos capas densas con activación GELU entre transformaciones de atención.
+
+APRENDIZAJE POR REFUERZO
+El agente toma acciones en un entorno y recibe recompensas.
+El objetivo es maximizar la recompensa acumulada a lo largo del tiempo.
+La política define qué acción tomar en cada estado.
+El value function estima la recompensa futura esperada desde un estado.
+PPO (Proximal Policy Optimization) actualiza la política sin alejarse demasiado de la política anterior — estable y eficiente.
+El reward shaping diseña señales de recompensa que guíen el aprendizaje hacia el comportamiento deseado.
+On-policy learning aprende de experiencias de la política actual. Off-policy puede aprender de experiencias pasadas.
+
+MODELOS DE LENGUAJE
+Un modelo de lenguaje aprende a predecir el siguiente token dado el contexto anterior.
+La perplejidad mide qué tan bien el modelo predice texto nuevo — menor es mejor.
+Temperatura en generación: valores bajos producen texto más determinista, valores altos más diverso.
+Top-k sampling: solo muestrea entre los k tokens más probables.
+El aprendizaje catastrófico ocurre cuando entrenar con datos nuevos hace olvidar conocimiento anterior.
+Elastic Weight Consolidation (EWC) penaliza cambios en pesos importantes para conocimiento previo.
+
+VISIÓN POR COMPUTADOR
+OpenCV es la librería estándar para procesamiento de imágenes en tiempo real.
+Un frame de cámara llega como array numpy de shape (alto, ancho, 3) en formato BGR.
+La detección de bordes Canny aplica gradientes de intensidad para encontrar contornos.
+La transformada de Hough detecta líneas en imágenes de bordes.
+MediaPipe provee modelos de detección de manos, rostro y pose optimizados para tiempo real.
+El flujo óptico mide el movimiento aparente entre frames consecutivos.
+La diferencia de frames detecta movimiento: frame_actual - frame_anterior.

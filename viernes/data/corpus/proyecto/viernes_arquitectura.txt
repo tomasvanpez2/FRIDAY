@@ -1,0 +1,79 @@
+VIERNES — DESCRIPCIÓN DEL PROYECTO
+
+QUÉ ES VIERNES
+VIERNES es una entidad de inteligencia artificial personal inspirada en FRIDAY de Iron Man.
+No es un chatbot. No usa APIs externas. Es una entidad que aprende sola con el uso.
+Corre completamente local en el dispositivo del usuario — sin conexión a internet en operación.
+En desarrollo corre en Mac Intel. El objetivo final es hardware ARM con 6GB RAM o menos.
+VIERNES tiene presencia continua — observa, aprende y actúa. No espera preguntas.
+
+PRINCIPIOS DE DISEÑO
+Privacy first: todo el procesamiento ocurre localmente. Audio, imagen y datos nunca salen del dispositivo.
+Aprendizaje automático: VIERNES mejora sola con el uso sin intervención manual.
+Entidad, no asistente: VIERNES tiene carácter propio, habla en primera persona, con observaciones directas.
+Ultraligero: diseñado para correr con recursos limitados. Cada componente debe justificar su uso de RAM y CPU.
+Modular: cada componente es independiente y puede probarse en aislamiento.
+
+ARQUITECTURA DEL SISTEMA
+El sistema tiene tres capas principales:
+Capa de percepción: cámara, tracking visual, interpretación de escena.
+Capa cognitiva: modelo de lenguaje, agente RL, sistema de memoria, agentes especializados.
+Capa de interacción: voz (entrada y salida), gestos, overlays AR.
+
+COMPONENTES EXISTENTES
+ARPipeline: orquestador del loop visual. Corre a 15 FPS. Gestiona cámara, tracker y compositor.
+CameraCapture: captura de cámara en hilo dedicado con buffer de 2 frames. Backend AVFoundation en Mac.
+SpatialTracker: detección de manos (landmarks + distancia CERCA/MEDIA/LEJOS), rostro y superficies planas.
+ARCompositor: renderizado de overlays AR sobre el frame. Tipos: TEXT, PANEL, BOX, LABEL.
+VIERNESAgent: agente PPO de aprendizaje por refuerzo. Vector de estado de 10 floats, 5 acciones discretas.
+KnowledgeSystem: sistema de memoria básico (en desarrollo hacia LanceDB + embeddings).
+Logger: logger central con tiempo relativo de alta precisión usando perf_counter.
+PipelineTimer: medición de latencias con percentiles P50/P95/P99.
+
+COMPONENTES EN DESARROLLO
+Modelo de lenguaje propio: transformer pequeño (~20M parámetros) entrenado sobre corpus técnico en español.
+Sistema de voz propio: ASR y TTS sin Whisper ni APIs externas. Aprende la voz del usuario con el uso.
+Agentes especializados: code_agent, diagnostic_agent, memory_agent, tools_agent.
+Orquestador: conecta el agente RL con los agentes especializados y el modelo de lenguaje.
+RewardMonitor: detecta señales implícitas de utilidad del usuario para el aprendizaje por refuerzo.
+
+ESTRUCTURA DE ARCHIVOS
+viernes/main.py — punto de entrada. Inicia ARPipeline y VIERNESCore.
+viernes/config.py — configuración global. Paths, parámetros de modelos, constantes.
+viernes/core/ — pipeline AR: sensor_fusion, spatial_tracker, ar_compositor, ar_pipeline.
+viernes/cognitive/ — sistema cognitivo: rl_agent, knowledge_system, language_model, orchestrator.
+viernes/cognitive/agents/ — agentes especializados: code, diagnostic, memory, tools.
+viernes/interaction/ — interacción: audio_capture, vad, wake_word, asr_model, tts_model, gesture_handler.
+viernes/perception/ — interpretación de escena: scene_interpreter, context_builder, technical_analyzer.
+viernes/tools/ — herramientas ejecutables: git_tool, file_reader, terminal_tool, project_analyzer.
+viernes/utils/ — utilidades: logger, timing.
+viernes/data/ — datos locales: corpus, memoria LanceDB, modelos entrenados.
+viernes/models/ — modelos guardados: política RL, LM, ASR, TTS, tokenizer.
+
+CÓMO HABLA VIERNES
+VIERNES habla en español principalmente. Usa inglés solo cuando el contexto técnico lo requiere.
+Respuestas cortas y directas. Sin relleno. Sin confirmaciones innecesarias.
+Primera persona con carácter. No "He detectado X" sino "Hay un problema en el circuito, Tony."
+Observa antes de hablar. El silencio es válido y frecuente.
+Nunca hace listas de pasos si puede decirlo en una frase.
+Ejemplos de respuestas correctas:
+"El error está en la línea 47. Falta cerrar el paréntesis."
+"Ese condensador está invertido."
+"El último commit rompió la función de tracking. Era el de ayer."
+"No interrumpas lo que estás haciendo, esto puede esperar."
+Ejemplos de respuestas incorrectas:
+"He analizado el código y he encontrado los siguientes problemas: 1) ..."
+"Por supuesto, aquí está la información que solicitaste..."
+"Entendido, procederé a revisar el archivo."
+
+PARÁMETROS DE HARDWARE OBJETIVO
+RAM disponible: máximo 4GB para VIERNES (dejando margen en 6GB total).
+CPU: ARM o Intel sin GPU dedicada.
+Almacenamiento: menos de 2GB para todos los modelos.
+Latencia de respuesta objetivo: menos de 2 segundos desde que el usuario habla hasta que VIERNES responde.
+FPS del pipeline AR: mínimo 12 FPS con todos los componentes activos.
+
+CICLO DE SESIÓN
+Al iniciar: cargar política RL, cargar LM, conectar a memoria LanceDB, iniciar captura de audio y cámara.
+Durante sesión: percepción continua → estado → agente decide → acción → reward implícito.
+Al cerrar: apply_decay en memoria, consolidar memorias similares, entrenar agente con buffer de la sesión, guardar política, logging de sesión.

@@ -1,0 +1,67 @@
+DEBUGGING EN PYTHON
+
+LECTURA DE ERRORES
+Un traceback se lee de abajo hacia arriba. La última línea es el error. Las líneas anteriores muestran el camino de llamadas que llevó al error.
+TypeError: indica operación sobre tipo incorrecto. Ejemplo: sumar int con str.
+AttributeError: el objeto no tiene ese atributo o método. Verificar typos y tipo del objeto.
+KeyError: la clave no existe en el diccionario. Usar dict.get(clave) para evitar el error.
+IndexError: índice fuera del rango de la lista. Verificar longitud con len().
+ImportError / ModuleNotFoundError: el módulo no existe o no está instalado.
+ValueError: el valor no es válido para esa operación. Ejemplo: int("texto").
+NameError: variable no definida. Verificar scope y typos.
+RecursionError: demasiadas llamadas recursivas. Verificar condición de parada.
+MemoryError: el sistema se quedó sin memoria RAM disponible.
+
+ESTRATEGIAS DE DEBUGGING
+Dividir y conquistar: aislar el problema reduciendo el código al mínimo que reproduce el error.
+Añadir prints estratégicos: imprimir el tipo y valor de variables clave antes del error.
+Verificar precondiciones: assert x is not None, "x no puede ser None" — el assert falla antes del error real.
+Usar logging en lugar de print para producción: logging.debug("valor: %s", valor).
+Reproducir el error de forma consistente antes de intentar corregirlo.
+Leer el error completo — el mensaje muchas veces dice exactamente qué falló y dónde.
+
+HERRAMIENTAS DE PROFILING
+cProfile: perfila el tiempo de ejecución por función.
+python3 -m cProfile -s cumulative script.py — ordena por tiempo acumulado.
+line_profiler: mide tiempo línea por línea (requiere instalación).
+memory_profiler: mide uso de memoria línea por línea (requiere instalación).
+tracemalloc: módulo estándar para rastrear allocations de memoria.
+timeit: mide el tiempo de fragmentos de código pequeños.
+
+ERRORES COMUNES EN PYTHON
+Mutabilidad: modificar una lista dentro de una función modifica el original. Usar list.copy() si no es deseado.
+Variables globales: modificar una variable global dentro de una función requiere declarar global variable.
+Closures: las funciones lambda en bucles capturan la variable por referencia, no por valor.
+None implícito: una función sin return explícito retorna None.
+Comparar con is vs ==: is compara identidad (mismo objeto), == compara valor. Usar == para comparar valores.
+Float precision: 0.1 + 0.2 != 0.3 en punto flotante. Usar math.isclose() para comparar floats.
+
+ERRORES COMUNES EN PYTORCH
+RuntimeError: expected scalar type float pero received double — usar tensor.float() para convertir.
+RuntimeError: size mismatch — las dimensiones de los tensores no coinciden. Imprimir .shape de cada tensor.
+CUDA out of memory — en GPU sin memoria. Usar torch.no_grad() en inferencia y reducir batch size.
+Gradientes en None — olvidar llamar loss.backward() antes de optimizer.step().
+Modelo en modo train durante evaluación — olvidar llamar model.eval().
+
+PATRONES DE CÓDIGO ROBUSTO
+Siempre validar entradas al inicio de una función antes de procesarlas.
+Usar context managers (with) para recursos que deben cerrarse: archivos, conexiones, locks.
+Preferir excepciones específicas sobre except Exception genérico.
+Logging con niveles: DEBUG para desarrollo, INFO para eventos normales, WARNING para situaciones inesperadas, ERROR para fallos.
+Los tests unitarios documentan el comportamiento esperado y detectan regresiones.
+
+ENTORNOS DE DESARROLLO
+VSCode con extensión Python: debugging visual, inspección de variables, breakpoints con click.
+Jupyter Notebooks: útiles para experimentación y prototipado, no para código de producción.
+La extensión Pylance en VSCode da análisis estático y autocompletado avanzado.
+Black formatea código Python automáticamente siguiendo PEP 8.
+isort ordena los imports automáticamente.
+mypy verifica tipos estáticos en tiempo de análisis.
+
+TESTING
+unittest es el módulo de testing estándar de Python.
+pytest es más expresivo y tiene mejor output. Compatible con unittest.
+Un test debe verificar una sola cosa. Nombre descriptivo: test_retrieve_returns_empty_list_when_no_memories.
+Fixtures en pytest proveen datos de prueba compartidos entre tests.
+Mock permite reemplazar dependencias externas en tests unitarios.
+La cobertura de código (coverage) mide qué porcentaje del código está cubierto por tests.

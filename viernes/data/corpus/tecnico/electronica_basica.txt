@@ -1,0 +1,64 @@
+ELECTRÓNICA BÁSICA — FUNDAMENTOS
+
+RESISTENCIAS
+Una resistencia es un componente que limita el flujo de corriente eléctrica en un circuito.
+Su unidad de medida es el ohmio (Ω). La ley de Ohm establece que V = I × R, donde V es voltaje en voltios, I es corriente en amperios, y R es resistencia en ohmios.
+Las resistencias se clasifican por su valor, tolerancia y potencia máxima. Una resistencia de 10kΩ con tolerancia del 5% puede tener un valor real entre 9500Ω y 10500Ω.
+El código de colores de resistencias: negro=0, marrón=1, rojo=2, naranja=3, amarillo=4, verde=5, azul=6, violeta=7, gris=8, blanco=9.
+Resistencias en serie: R_total = R1 + R2 + R3. Resistencias en paralelo: 1/R_total = 1/R1 + 1/R2 + 1/R3.
+
+CONDENSADORES
+Un condensador almacena energía en forma de campo eléctrico. Su unidad es el faradio (F). En la práctica se usan microfaradios (µF), nanofaradios (nF) y picofaradios (pF).
+Los condensadores se usan para filtrar ruido, desacoplar señales, y almacenar carga temporalmente.
+Condensadores en serie: 1/C_total = 1/C1 + 1/C2. Condensadores en paralelo: C_total = C1 + C2.
+Un condensador electrolítico tiene polaridad — el terminal positivo debe conectarse al potencial mayor. Conectarlo al revés lo destruye.
+La impedancia de un condensador es Xc = 1/(2πfC), donde f es la frecuencia. A mayor frecuencia, menor impedancia — por eso los condensadores bloquean DC y dejan pasar AC.
+
+INDUCTORES
+Un inductor almacena energía en forma de campo magnético. Su unidad es el henrio (H).
+Los inductores se oponen a cambios bruscos de corriente. Su impedancia es XL = 2πfL.
+A mayor frecuencia, mayor impedancia — opuesto al condensador.
+
+DIODOS
+Un diodo permite el flujo de corriente en una sola dirección. El ánodo es el terminal positivo, el cátodo el negativo.
+La tensión de umbral de un diodo de silicio es aproximadamente 0.7V. Para germanio es 0.3V.
+Un diodo LED emite luz cuando conduce. Su color depende del material semiconductor.
+Un diodo Zener se usa como regulador de voltaje — conduce en inversa a una tensión específica llamada tensión Zener.
+
+TRANSISTORES
+Un transistor BJT tiene tres terminales: base, colector y emisor. Funciona como amplificador o interruptor.
+En saturación, el transistor conduce completamente (interruptor cerrado). En corte, no conduce (interruptor abierto). En zona activa, amplifica señales.
+La ganancia de corriente hFE (o beta) define cuánta corriente de colector controla la corriente de base. Si hFE=100, 1mA en base controla 100mA en colector.
+Un transistor MOSFET se controla por tensión en la puerta (gate), no por corriente. Es más eficiente para conmutación de alta potencia.
+
+CIRCUITOS INTEGRADOS
+Un circuito integrado (CI) concentra miles o millones de transistores en un chip de silicio.
+El 555 es un temporizador clásico. Puede operar en modo monoestable (un pulso) o astable (oscilador).
+El LM741 es un amplificador operacional clásico. Sus aplicaciones incluyen: amplificador inversor, no inversor, sumador, integrador, diferenciador.
+Los microcontroladores (Arduino, STM32, ESP32) integran CPU, memoria y periféricos en un solo chip.
+
+SEÑALES
+Una señal analógica varía de forma continua. Una señal digital toma valores discretos (0 o 1).
+La frecuencia de una señal es el número de ciclos por segundo, medida en hercios (Hz).
+El período T = 1/f. Una señal de 1kHz tiene período de 1ms.
+La frecuencia de Nyquist establece que para digitalizar una señal sin pérdidas, la frecuencia de muestreo debe ser al menos el doble de la frecuencia máxima de la señal.
+
+FUENTES DE ALIMENTACIÓN
+Una fuente regulada mantiene voltaje constante independiente de la carga.
+El regulador 7805 produce 5V regulados a partir de una entrada entre 7V y 35V.
+Un convertidor DC-DC buck reduce voltaje. Un boost lo aumenta.
+La corriente máxima de un regulador lineal está limitada por su disipación de potencia: P = (Vin - Vout) × I.
+
+MEDICIÓN
+El multímetro mide voltaje (V), corriente (A) y resistencia (Ω).
+Para medir voltaje: conectar en paralelo con el componente.
+Para medir corriente: conectar en serie — esto requiere abrir el circuito.
+Para medir resistencia: desconectar el componente del circuito primero.
+El osciloscopio muestra señales en función del tiempo. El eje X es tiempo, el eje Y es voltaje.
+La sonda del osciloscopio tiene una atenuación de 1x o 10x. En 10x, el voltaje real es 10 veces lo mostrado.
+
+CORTOCIRCUITO Y PROTECCIONES
+Un cortocircuito ocurre cuando se conecta directamente el positivo con el negativo de la fuente.
+Los fusibles protegen el circuito interrumpiendo la corriente cuando supera un límite.
+Un interruptor diferencial detecta fugas de corriente a tierra y corta el circuito.
+Siempre verificar polaridad antes de conectar circuitos integrados — invertir alimentación los destruye.

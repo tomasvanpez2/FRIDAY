@@ -1,0 +1,89 @@
+PYTHON — FUNDAMENTOS Y PATRONES
+
+TIPOS DE DATOS
+Python tiene tipos básicos: int, float, str, bool, None.
+Las listas son mutables: [1, 2, 3]. Las tuplas son inmutables: (1, 2, 3).
+Los diccionarios almacenan pares clave-valor: {"nombre": "VIERNES", "version": 1}.
+Los conjuntos (set) no tienen duplicados: {1, 2, 3}.
+El tipado en Python es dinámico pero se pueden usar anotaciones: def funcion(x: int) -> str.
+
+FUNCIONES
+Una función se define con def. Puede recibir argumentos posicionales, keyword, y con valores por defecto.
+Los argumentos *args reciben una cantidad variable de posicionales. **kwargs recibe keyword arguments variables.
+Las funciones son objetos de primera clase — se pueden pasar como argumentos y retornar desde otras funciones.
+Una función lambda es anónima: lambda x: x * 2.
+Los decoradores modifican el comportamiento de funciones sin cambiar su código.
+
+CLASES Y OBJETOS
+Una clase define un tipo de objeto. __init__ es el constructor.
+La herencia permite que una clase herede atributos y métodos de otra.
+__str__ define cómo se representa el objeto como string.
+__repr__ define la representación oficial del objeto.
+Los métodos de clase reciben cls como primer argumento. Los métodos estáticos no reciben self ni cls.
+Las propiedades (@property) permiten getters y setters con sintaxis de atributo.
+
+MANEJO DE ERRORES
+try/except captura excepciones. finally siempre se ejecuta.
+raise lanza una excepción. Se pueden crear excepciones personalizadas heredando de Exception.
+Es mejor capturar excepciones específicas que usar except Exception genérico.
+El módulo logging es superior a print para registrar errores en producción.
+
+CONCURRENCIA
+threading permite ejecutar código en paralelo. Útil para operaciones de I/O.
+El GIL (Global Interpreter Lock) impide que dos hilos ejecuten bytecode Python simultáneamente. Por eso threading no acelera código CPU-bound.
+multiprocessing usa procesos separados, cada uno con su propio GIL. Útil para código CPU-bound.
+asyncio permite concurrencia cooperativa con async/await. Ideal para I/O asíncrono.
+queue.Queue es thread-safe para comunicación entre hilos.
+
+GESTIÓN DE MEMORIA
+Python usa garbage collection automático con conteo de referencias.
+Los objetos grandes deben liberarse explícitamente cuando ya no se necesitan.
+El módulo gc permite controlar el garbage collector manualmente.
+Los generadores (yield) producen valores uno a la vez sin cargar todo en memoria.
+Los context managers (with) garantizan liberación de recursos.
+
+MÓDULOS Y PAQUETES
+Un módulo es un archivo .py. Un paquete es una carpeta con __init__.py.
+import importa módulos. from módulo import nombre importa nombres específicos.
+__all__ define qué se exporta cuando se hace from módulo import *.
+sys.path es la lista de directorios donde Python busca módulos.
+Los entornos virtuales (venv) aíslan dependencias por proyecto.
+
+NUMPY
+numpy es la base del cómputo numérico en Python.
+Un array numpy es más eficiente que una lista Python para operaciones matemáticas.
+Las operaciones vectorizadas evitan loops explícitos: a + b suma elemento a elemento.
+axis=0 opera sobre filas. axis=1 opera sobre columnas.
+reshape cambia la forma sin copiar datos. flatten() convierte a 1D.
+np.zeros, np.ones, np.random.randn crean arrays con valores específicos.
+La indexación booleana filtra elementos: arr[arr > 0] devuelve solo positivos.
+
+PYTORCH BÁSICO
+Un tensor es el equivalente numpy de PyTorch, con soporte para gradientes.
+torch.tensor() crea tensores desde listas o arrays numpy.
+requires_grad=True activa el seguimiento de gradientes para backpropagation.
+model.train() activa dropout y batch norm para entrenamiento.
+model.eval() los desactiva para inferencia.
+torch.no_grad() desactiva el cálculo de gradientes — obligatorio en inferencia para ahorrar memoria.
+optimizer.zero_grad() limpia gradientes acumulados antes de cada paso.
+loss.backward() calcula gradientes. optimizer.step() actualiza pesos.
+
+PATRONES DE DISEÑO
+Singleton: una sola instancia de una clase en todo el programa.
+Observer: un objeto notifica a otros cuando cambia su estado.
+Factory: una función o clase que crea objetos de diferentes tipos.
+Strategy: encapsula algoritmos intercambiables detrás de una interfaz común.
+Pipeline: encadena transformaciones de datos, la salida de una es entrada de la siguiente.
+
+DEBUGGING
+pdb es el debugger estándar de Python. breakpoint() inserta un punto de parada.
+Los stack traces se leen de abajo hacia arriba — la línea más baja es donde ocurrió el error.
+logging.DEBUG muestra todos los mensajes. logging.ERROR solo los errores.
+El módulo cProfile mide el tiempo de ejecución de cada función.
+memory_profiler mide el uso de memoria línea por línea.
+
+ARCHIVOS Y PATHS
+pathlib.Path es la forma moderna de manejar rutas. Es multiplataforma.
+Path.exists() verifica si existe. Path.mkdir(parents=True) crea directorios.
+with open(archivo, 'r', encoding='utf-8') as f garantiza cierre del archivo.
+json.load() lee JSON desde archivo. json.dump() escribe JSON.

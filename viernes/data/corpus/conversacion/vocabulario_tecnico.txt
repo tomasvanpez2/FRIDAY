@@ -1,0 +1,145 @@
+VOCABULARIO TÉCNICO EN ESPAÑOL — VIERNES
+
+TÉRMINOS DE PROGRAMACIÓN
+función — function
+clase — class
+método — method
+atributo — attribute
+variable — variable
+bucle — loop
+condición — condition
+excepción — exception
+módulo — module
+paquete — package
+biblioteca / librería — library
+dependencia — dependency
+interfaz — interface
+instancia — instance
+herencia — inheritance
+polimorfismo — polymorphism
+encapsulamiento — encapsulation
+abstracción — abstraction
+algoritmo — algorithm
+estructura de datos — data structure
+pila — stack
+cola — queue
+árbol — tree
+grafo — graph
+tabla hash — hash table
+índice — index
+iterador — iterator
+generador — generator
+decorador — decorator
+contexto — context
+alcance — scope
+puntero — pointer (en contextos de bajo nivel)
+memoria heap — heap memory
+memoria stack — stack memory
+recolector de basura — garbage collector
+hilo — thread
+proceso — process
+concurrencia — concurrency
+paralelismo — parallelism
+asincronía — asynchrony
+bloqueo — lock / mutex
+condición de carrera — race condition
+punto muerto — deadlock
+
+TÉRMINOS DE MACHINE LEARNING
+red neuronal — neural network
+capa — layer
+neurona — neuron
+peso — weight
+sesgo — bias
+gradiente — gradient
+retropropagación — backpropagation
+función de pérdida — loss function
+época — epoch
+lote — batch
+tasa de aprendizaje — learning rate
+sobreajuste — overfitting
+subajuste — underfitting
+regularización — regularization
+validación — validation
+inferencia — inference
+entrenamiento — training
+modelo — model
+parámetro — parameter
+hiperparámetro — hyperparameter
+vector de características — feature vector
+espacio de embedding — embedding space
+atención — attention
+transformador — transformer
+codificador — encoder
+decodificador — decoder
+token — token
+vocabulario — vocabulary
+perplejidad — perplexity
+temperatura — temperature
+muestreo — sampling
+política — policy
+recompensa — reward
+agente — agent
+entorno — environment
+estado — state
+acción — action
+episodio — episode
+aprendizaje por refuerzo — reinforcement learning
+
+TÉRMINOS DE ELECTRÓNICA
+resistencia — resistor / resistance
+condensador / capacitor — capacitor
+inductor — inductor / coil
+diodo — diode
+transistor — transistor
+circuito integrado — integrated circuit
+microcontrolador — microcontroller
+fuente de alimentación — power supply
+voltaje / tensión — voltage
+corriente — current
+potencia — power
+frecuencia — frequency
+señal — signal
+ruido — noise
+tierra / masa — ground
+corto circuito — short circuit
+circuito abierto — open circuit
+soldadura — soldering
+protoboard — breadboard
+PCB (placa de circuito impreso) — printed circuit board
+multímetro — multimeter
+osciloscopio — oscilloscope
+regulador — regulator
+convertidor — converter
+amplificador — amplifier
+filtro — filter
+oscilador — oscillator
+
+FRASES TÉCNICAS FRECUENTES
+"El error está en la línea [N]"
+"Falta importar [módulo]"
+"El tipo no coincide — espera [tipo] pero recibe [tipo]"
+"La función retorna None cuando debería retornar [tipo]"
+"El índice está fuera de rango"
+"La clave no existe en el diccionario"
+"No hay suficiente memoria para esta operación"
+"El hilo está bloqueado esperando el lock"
+"El modelo no está en modo evaluación"
+"Los gradientes no se están reseteando"
+"Las dimensiones no coinciden: espera [forma] pero recibe [forma]"
+"El archivo no existe en esa ruta"
+"Permiso denegado para acceder al archivo"
+"La conexión fue rechazada"
+"Timeout esperando respuesta"
+"El proceso fue interrumpido"
+"El corpus no tiene suficiente datos para entrenar"
+"La pérdida no está convergiendo — revisar learning rate"
+"El modelo está sobreajustando — necesita más datos o regularización"
+"La política no ha aprendido nada útil todavía — necesita más episodios"
+
+PATRONES DE ANÁLISIS TÉCNICO
+Cuando se analiza un error: identificar el tipo de error, la línea donde ocurrió, y la causa raíz.
+Cuando se analiza código: identificar qué hace, qué no hace, y qué podría fallar.
+Cuando se analiza un circuito: identificar componentes, valores, y posibles problemas.
+Cuando se sugiere una solución: dar la solución directa, no una lista de opciones.
+Cuando no hay suficiente información: pedir exactamente lo que falta, no hacer suposiciones.

@@ -1,0 +1,124 @@
+GIT — CONTROL DE VERSIONES
+
+CONCEPTOS FUNDAMENTALES
+Git es un sistema de control de versiones distribuido. Cada clon del repositorio tiene el historial completo.
+Un commit es una instantánea del estado del proyecto en un momento dado.
+Un branch es una línea independiente de desarrollo. main (o master) es la rama principal.
+El staging area (índice) es el área intermedia entre el directorio de trabajo y el commit.
+HEAD apunta al commit actual — generalmente el último commit de la rama activa.
+
+COMANDOS ESENCIALES
+git init — inicializa un repositorio en el directorio actual
+git clone URL — clona un repositorio remoto
+git status — muestra el estado de los archivos: modificados, staged, sin seguimiento
+git add archivo — agrega archivo al staging area
+git add . — agrega todos los cambios al staging area
+git commit -m "mensaje" — crea un commit con los cambios staged
+git log --oneline — historial de commits resumido, uno por línea
+git log --oneline -10 — últimos 10 commits
+git diff — cambios entre directorio de trabajo y staging area
+git diff HEAD — cambios entre directorio de trabajo y último commit
+git diff HEAD~1 HEAD — cambios entre el penúltimo y último commit
+
+BRANCHES
+git branch — lista ramas locales
+git branch nombre — crea nueva rama
+git checkout nombre — cambia a una rama
+git checkout -b nombre — crea y cambia a nueva rama en un paso
+git merge rama — fusiona la rama indicada en la rama actual
+git branch -d nombre — elimina rama (solo si ya fue fusionada)
+
+REPOSITORIO REMOTO
+git remote -v — muestra los remotos configurados
+git fetch — descarga cambios del remoto sin fusionar
+git pull — fetch + merge de la rama remota correspondiente
+git push origin rama — sube la rama al remoto
+git push -u origin rama — sube y configura tracking de la rama
+
+DESHACER CAMBIOS
+git restore archivo — descarta cambios en directorio de trabajo (no staged)
+git restore --staged archivo — quita del staging area sin perder cambios
+git reset HEAD~1 — deshace el último commit manteniendo los cambios staged
+git reset --hard HEAD~1 — deshace el último commit y descarta todos los cambios (DESTRUCTIVO)
+git revert HASH — crea un nuevo commit que deshace el commit indicado (seguro para ramas compartidas)
+
+INSPECCIÓN
+git show HASH — muestra los cambios de un commit específico
+git blame archivo — muestra qué commit modificó cada línea de un archivo
+git stash — guarda cambios temporalmente sin commitear
+git stash pop — recupera los cambios guardados con stash
+
+BUENAS PRÁCTICAS
+Los mensajes de commit deben ser descriptivos: "Fix null pointer en sensor_fusion.py" no "fix bug".
+Commits pequeños y frecuentes son mejores que commits grandes y espaciados.
+Nunca hacer git reset --hard en ramas compartidas con otros — reescribe la historia.
+Usar .gitignore para excluir archivos generados, entornos virtuales y datos sensibles.
+Revisar git diff antes de cada commit para verificar exactamente qué se está commitando.
+
+TERMINAL BASH
+
+NAVEGACIÓN
+pwd — muestra el directorio actual
+ls — lista archivos y directorios
+ls -la — lista con detalles y archivos ocultos
+cd directorio — cambia de directorio
+cd .. — sube un nivel
+cd ~ — va al directorio home
+cd - — va al directorio anterior
+
+ARCHIVOS
+cp origen destino — copia archivo
+mv origen destino — mueve o renombra archivo
+rm archivo — elimina archivo (sin papelera, irreversible)
+rm -rf directorio — elimina directorio y todo su contenido (MUY DESTRUCTIVO)
+mkdir nombre — crea directorio
+mkdir -p ruta/completa — crea ruta completa incluyendo directorios intermedios
+touch archivo — crea archivo vacío o actualiza su timestamp
+cat archivo — muestra contenido del archivo
+less archivo — muestra contenido paginado (q para salir)
+head -n 20 archivo — primeras 20 líneas
+tail -n 20 archivo — últimas 20 líneas
+tail -f archivo — muestra nuevas líneas en tiempo real (útil para logs)
+
+BÚSQUEDA
+find . -name "*.py" — busca archivos .py en el directorio actual y subdirectorios
+grep "texto" archivo — busca texto en archivo
+grep -r "texto" . — busca texto recursivamente en todos los archivos
+grep -n "texto" archivo — muestra número de línea de cada coincidencia
+
+PROCESOS
+ps aux — lista todos los procesos en ejecución
+kill PID — termina un proceso por su ID
+kill -9 PID — fuerza la terminación (cuando kill normal no funciona)
+top — monitor de procesos en tiempo real (q para salir)
+htop — versión mejorada de top (si está instalado)
+Ctrl+C — interrumpe el proceso en primer plano
+Ctrl+Z — suspende el proceso en primer plano
+bg — reanuda proceso suspendido en background
+fg — trae proceso de background al primer plano
+
+PIPES Y REDIRECCIÓN
+comando1 | comando2 — pasa la salida de comando1 como entrada de comando2
+comando > archivo — redirige salida a archivo (sobreescribe)
+comando >> archivo — redirige salida a archivo (agrega al final)
+comando 2> error.log — redirige errores a archivo
+comando > salida.log 2>&1 — redirige salida y errores al mismo archivo
+
+PYTHON EN TERMINAL
+python3 script.py — ejecuta script Python
+python3 -m módulo — ejecuta módulo como script
+python3 -c "código" — ejecuta código Python directamente
+PYTHONPATH=. python3 script.py — agrega directorio actual al path de Python
+pip install paquete — instala paquete
+pip install -r requirements.txt — instala desde archivo de requisitos
+pip show paquete — muestra información del paquete instalado
+pip list — lista paquetes instalados
+python3 -m venv venv — crea entorno virtual
+source venv/bin/activate — activa entorno virtual (Mac/Linux)
+deactivate — desactiva entorno virtual
+
+DEBUGGING EN TERMINAL
+python3 -m pdb script.py — ejecuta script en modo debug
+Comandos pdb: n (next), s (step into), c (continue), q (quit), p variable (print), l (list code)
+python3 -m py_compile script.py — verifica sintaxis sin ejecutar
+python3 -m cProfile script.py — perfila el rendimiento
