@@ -1,0 +1,130 @@
+<img src="https://huggingface.co/landing/assets/tokenizers/tokenizers-logo.png" width="600"/>
+<a href="https://badge.fury.io/py/tokenizers">
+<img alt="Build" src="https://badge.fury.io/py/tokenizers.svg">
+<a href="https://github.com/huggingface/tokenizers/blob/master/LICENSE">
+<img alt="GitHub" src="https://img.shields.io/github/license/huggingface/tokenizers.svg?color=blue">
+
+Provides an implementation of today's most used tokenizers, with a focus on performance and
+
+Bindings over the [Rust](https://github.com/huggingface/tokenizers/tree/master/tokenizers) implementation.
+If you are interested in the High-level design, you can go check it there.
+
+- Train new vocabularies and tokenize using 4 pre-made tokenizers (Bert WordPiece and the 3
+- Extremely fast (both training and tokenization), thanks to the Rust implementation. Takes
+less than 20 seconds to tokenize a GB of text on a server's CPU.
+- Easy to use, but also extremely versatile.
+- Designed for research and production.
+- Normalization comes with alignments tracking. It's always possible to get the part of the
+original sentence that corresponds to a given token.
+- Does all the pre-processing: Truncate, Pad, add the special tokens your model needs.
+
+To use this method, you need to have the Rust installed:
+
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+export PATH="$HOME/.cargo/bin:$PATH"
+
+Once Rust is installed, you can compile doing the following
+
+git clone https://github.com/huggingface/tokenizers
+
+# Create a virtual env (you can use yours as well)
+
+# Install `tokenizers` in the current virtual env
+
+### Load a pretrained tokenizer from the Hub
+
+from tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_pretrained("bert-base-cased")
+
+### Using the provided Tokenizers
+
+We provide some pre-build tokenizers to cover the most common cases. You can easily load one of
+these using some `vocab.json` and `merges.txt` files:
+
+from tokenizers import CharBPETokenizer
+
+vocab = "./path/to/vocab.json"
+merges = "./path/to/merges.txt"
+tokenizer = CharBPETokenizer(vocab, merges)
+
+encoded = tokenizer.encode("I can feel the magic, can you?")
+
+And you can train them just as simply:
+
+from tokenizers import CharBPETokenizer
+
+tokenizer = CharBPETokenizer()
+
+tokenizer.train([ "./path/to/files/1.txt", "./path/to/files/2.txt" ])
+
+encoded = tokenizer.encode("I can feel the magic, can you?")
+
+# And finally save it somewhere
+tokenizer.save("./path/to/directory/my-bpe.tokenizer.json")
+
+- `CharBPETokenizer`: The original BPE
+- `ByteLevelBPETokenizer`: The byte level version of the BPE
+- `SentencePieceBPETokenizer`: A BPE implementation compatible with the one used by SentencePiece
+- `BertWordPieceTokenizer`: The famous Bert tokenizer, using WordPiece
+
+All of these can be used and trained as explained above!
+
+Whenever these provided tokenizers don't give you enough freedom, you can build your own tokenizer,
+by putting all the different parts you need together.
+You can check how we implemented the [provided tokenizers](https://github.com/huggingface/tokenizers/tree/master/bindings/python/py_src/tokenizers/implementations) and adapt them easily to your own needs.
+
+#### Building a byte-level BPE
+
+Here is an example showing how to build your own byte-level BPE by putting all the different pieces
+together, and then saving it to a single file:
+
+from tokenizers import Tokenizer, models, pre_tokenizers, decoders, trainers, processors
+
+tokenizer = Tokenizer(models.BPE())
+
+# Customize pre-tokenization and decoding
+tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
+tokenizer.decoder = decoders.ByteLevel()
+tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
+
+trainer = trainers.BpeTrainer(
+initial_alphabet=pre_tokenizers.ByteLevel.alphabet()
+
+tokenizer.save("byte-level-bpe.tokenizer.json", pretty=True)
+
+Now, when you want to use this tokenizer, this is as simple as:
+
+from tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_file("byte-level-bpe.tokenizer.json")
+
+encoded = tokenizer.encode("I can feel the magic, can you?")
+
+### Typing support and stub generation
+
+The compiled PyO3 extension does not expose type annotations, so editors and type checkers would otherwise see most objects as `Any`. To provide full typing support, we use a two-step stub generation process:
+
+1. **Rust introspection** (`tools/stub-gen/`): Uses `pyo3-introspection` to analyze the compiled extension and generate `.pyi` stub files
+2. **Python enrichment** (`stub.py`): Adds docstrings from the runtime module and generates forwarding `__init__.py` shims
+
+The easiest way to regenerate stubs is via `make style`:
+
+1. Build the extension with `maturin develop --release`
+2. Run introspection to generate `.pyi` files
+3. Enrich stubs with docstrings via `stub.py`
+
+To run the stub generator directly:
+
+cargo run --manifest-path tools/stub-gen/Cargo.toml
+
+The stub generator automatically:
+- Builds the extension using maturin
+- Copies the built `.so` to the project root for introspection
+- Detects and sets `PYTHONHOME` for embedded Python (handles uv/venv environments)
+- Generates stubs to `py_src/tokenizers/`
+
+If you encounter Python initialization errors, you can manually set `PYTHONHOME`:
+
+export PYTHONHOME=$(python3 -c 'import sys; print(sys.base_prefix)')
+cargo run --manifest-path tools/stub-gen/Cargo.toml

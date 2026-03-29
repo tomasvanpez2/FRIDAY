@@ -1,0 +1,57 @@
+VIERNES — VISIÓN COMPLETA DEL SISTEMA
+
+PROPÓSITO
+VIERNES es una entidad de inteligencia artificial personal. No es un asistente de voz, no es un chatbot, no es un wrapper de ningún modelo externo. Es una entidad propia que aprende sola, tiene carácter definido, y opera completamente de forma local sin depender de ningún servicio externo.
+
+El nombre viene de FRIDAY, la IA de Tony Stark en Iron Man. La idea central es la misma: una presencia inteligente que conoce al usuario, entiende su trabajo, y actúa cuando tiene algo útil que aportar. No cuando se le pide — cuando es relevante.
+
+CÓMO APRENDE VIERNES
+VIERNES aprende por refuerzo automático. Esto significa que no se le enseña explícitamente qué hacer — aprende observando las consecuencias de sus acciones sobre el comportamiento del usuario.
+
+Si VIERNES hace una observación y el usuario la ignora, aprende que esa acción en ese contexto no fue útil. Si el usuario sigue el consejo o hace una pregunta de seguimiento, aprende que fue útil. Con miles de estas señales acumuladas en sesiones de uso real, VIERNES aprende cuándo hablar, qué decir, y cuándo quedarse en silencio.
+
+Este proceso no requiere que el usuario presione ningún botón de feedback. VIERNES infiere la utilidad del propio comportamiento del usuario — exactamente como lo haría una persona que aprende a leer a otra persona con el tiempo.
+
+QUÉ APRENDE VIERNES
+VIERNES aprende dos dominios principales. Primero, el entorno técnico del usuario: patrones de código, errores recurrentes, herramientas que usa, circuitos y componentes que analiza. Con el tiempo VIERNES se vuelve experta en el trabajo técnico específico del usuario, no en programación genérica. Segundo, el propio usuario: su ritmo de trabajo, cuándo está concentrado y no debe ser interrumpido, qué tipo de sugerencias encuentra útiles, cómo piensa y razona. Este modelo del usuario guía todas las decisiones de cuándo y cómo actuar.
+
+ARQUITECTURA DEL APRENDIZAJE
+El sistema tiene tres componentes de aprendizaje que operan juntos.
+
+El primero es el agente de refuerzo, basado en PPO (Proximal Policy Optimization). Este agente observa el estado del entorno — qué ve la cámara, qué hace el usuario, qué hora es, cuánto tiempo lleva inactivo — y decide qué acción tomar: hablar, mostrar un overlay, guardar algo en memoria, usar una herramienta, o permanecer en silencio. El agente actualiza su política al final de cada sesión con las señales de reward acumuladas durante esa sesión. Con cada sesión, las decisiones del agente se vuelven más precisas.
+
+El segundo es el modelo de lenguaje propio. No un modelo externo — un transformer pequeño entrenado desde cero sobre el corpus específico del dominio: documentación técnica, herramientas de desarrollo, el propio proyecto VIERNES, y patrones de conversación técnica en español. Este modelo genera el lenguaje de VIERNES: directo, técnico, con carácter. Se actualiza incrementalmente con cada sesión para incorporar nuevo vocabulario y patrones del usuario.
+
+El tercero es el sistema de memoria con LanceDB y embeddings semánticos. VIERNES recuerda lo que ha visto, lo que funcionó, lo que el usuario le enseñó. Esta memoria persiste entre sesiones y se organiza automáticamente — los recuerdos más útiles y recientes tienen más peso, los menos relevantes se desvanecen siguiendo la curva de olvido de Ebbinghaus.
+
+AGENTES ESPECIALIZADOS
+El orquestador de VIERNES coordina cuatro agentes especializados. El agente de código analiza el proyecto activo, identifica errores y patrones. El agente de diagnóstico interpreta la escena visible por cámara y determina qué está haciendo el usuario. El agente de memoria consulta y actualiza el knowledge system. El agente de herramientas ejecuta acciones reales: leer el repositorio, ver el historial de git, analizar archivos.
+
+Cuando el agente RL decide actuar, el orquestador determina qué agente especializado es más adecuado, lo invoca, y pasa el resultado al modelo de lenguaje para generar la respuesta final.
+
+CÓMO SE COMUNICA VIERNES
+VIERNES habla en español principalmente. Cuando el contexto técnico lo requiere, usa términos en inglés naturalmente — como lo haría cualquier persona técnica hispanohablante.
+
+Las respuestas son cortas y directas. Sin introducción, sin conclusión, sin relleno. Si hay un error en la línea 47, VIERNES dice "El error está en la línea 47" — no "He analizado el código y he encontrado el siguiente problema en la línea número 47 del archivo".
+
+VIERNES habla en primera persona con carácter definido. Observa antes de concluir. Cuando no sabe algo, lo dice. Cuando se equivoca, lo reconoce sin drama. El silencio es la acción correcta la mayor parte del tiempo — VIERNES solo habla cuando tiene algo genuinamente útil que decir.
+
+PRIVACIDAD
+Todo el procesamiento ocurre localmente. El audio nunca sale del dispositivo. Las imágenes de la cámara nunca salen del dispositivo. La memoria del usuario nunca salen del dispositivo. No hay telemetría, no hay logs remotos, no hay sincronización con servicios externos. VIERNES es completamente privada por diseño.
+
+HARDWARE OBJETIVO
+En desarrollo: Mac Intel con 16GB RAM. En producción: dispositivo ARM con 6GB RAM o menos, sin GPU dedicada. Todo el sistema debe funcionar dentro de 4GB de RAM, dejando margen para el sistema operativo. Cada componente se diseña con este límite en mente — si no cabe en el presupuesto de recursos, no entra en el sistema.
+
+FASES DE DESARROLLO
+Fase 1 — Base cognitiva: corpus, tokenizer, modelo de lenguaje, agente RL, sistema de memoria real con LanceDB. VIERNES puede pensar y recordar.
+Fase 2 — Percepción y voz: pipeline de audio propio (sin Whisper), ASR que aprende la voz del usuario, TTS con voz propia, interpretación de escena por cámara. VIERNES puede escuchar, hablar y ver.
+Fase 3 — Agentes y herramientas: agentes especializados, control de herramientas (git, terminal, archivos), orquestador completo. VIERNES puede actuar.
+Fase 4 — Integración total: todos los componentes conectados al pipeline AR existente. VIERNES opera como entidad completa.
+Fase 5 — Hardware real: port a ARM, optimización para 6GB RAM, integración con gafas AR físicas.
+
+PRINCIPIOS DE IMPLEMENTACIÓN
+Modularidad: cada componente se desarrolla y prueba en aislamiento antes de integrar. Unir componentes inestables crea problemas imposibles de diagnosticar.
+Ligereza: cada librería y cada modelo debe justificar su consumo de recursos. Si existe una alternativa más liviana que funciona igual, se usa esa.
+Privacidad por diseño: ningún componente hace llamadas a servicios externos. Si un componente requiere internet para funcionar, no entra en el sistema.
+Aprendizaje real: el sistema aprende de uso real, no de datos sintéticos. Las señales de reward vienen del comportamiento del usuario, no de etiquetas manuales.
+Carácter consistente: VIERNES tiene una voz y un estilo definidos. Cada componente que genera lenguaje respeta ese estilo.

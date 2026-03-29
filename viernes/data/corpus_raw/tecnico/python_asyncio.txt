@@ -1,0 +1,67 @@
+:mod:`!asyncio` --- Asynchronous I/O
+====================================
+
+-------------------------------
+
+asyncio is a library to write **concurrent** code using
+
+asyncio is used as a foundation for multiple Python asynchronous
+frameworks that provide high-performance network and web-servers,
+database connection libraries, distributed task queues, etc.
+
+asyncio is often a perfect fit for IO-bound and high-level
+
+:ref:`a-conceptual-overview-of-asyncio`
+Explanation of the fundamentals of asyncio.
+
+asyncio provides a set of **high-level** APIs to:
+
+* :ref:`run Python coroutines <coroutine>` concurrently and
+have full control over their execution;
+
+* perform :ref:`network IO and IPC <asyncio-streams>`;
+
+* control :ref:`subprocesses <asyncio-subprocess>`;
+
+* distribute tasks via :ref:`queues <asyncio-queues>`;
+
+* :ref:`synchronize <asyncio-sync>` concurrent code;
+
+Additionally, there are **low-level** APIs for
+*library and framework developers* to:
+
+* create and manage :ref:`event loops <asyncio-event-loop>`, which
+provide asynchronous APIs for :ref:`networking <loop_create_server>`,
+running :ref:`subprocesses <loop_subprocess_exec>`,
+handling :ref:`OS signals <loop_add_signal_handler>`, etc;
+
+* implement efficient protocols using
+:ref:`transports <asyncio-transports-protocols>`;
+
+* :ref:`bridge <asyncio-futures>` callback-based libraries and code
+
+.. include:: ../includes/wasm-notavail.rst
+
+You can experiment with an ``asyncio`` concurrent context in the :term:`REPL`:
+
+Use "await" directly instead of "asyncio.run()".
+Type "help", "copyright", "credits" or "license" for more information.
+>>> await asyncio.sleep(10, result='hello')
+
+This REPL provides limited compatibility with :envvar:`PYTHON_BASIC_REPL`.
+It is recommended that the default REPL is used
+for full functionality and the latest features.
+
+.. audit-event:: cpython.run_stdin "" ""
+
+.. versionchanged:: 3.12.5 (also 3.11.10, 3.10.15, 3.9.20, and 3.8.20)
+
+Uses PyREPL if possible, in which case :envvar:`PYTHONSTARTUP` is
+also executed. Emits audit events.
+
+.. We use the "rubric" directive here to avoid creating
+the "Reference" subsection in the TOC.
+
+:caption: Guides and Tutorials
+
+The source code for asyncio can be found in :source:`Lib/asyncio/`.

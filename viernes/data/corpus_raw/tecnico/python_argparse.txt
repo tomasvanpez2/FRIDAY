@@ -1,0 +1,494 @@
+This tutorial is intended to be a gentle introduction to :mod:`argparse`, the
+recommended command-line parsing module in the Python standard library.
+
+The standard library includes two other libraries directly related
+to command-line parameter processing: the lower level :mod:`optparse`
+module (which may require more code to configure for a given application,
+but also allows an application to request behaviors that ``argparse``
+doesn't support), and the very low level :mod:`getopt` (which specifically
+serves as an equivalent to the :c:func:`!getopt` family of functions
+While neither of those modules is covered directly in this guide, many of
+the core concepts in ``argparse`` first originated in ``optparse``, so
+some aspects of this tutorial will also be relevant to ``optparse`` users.
+
+Let's show the sort of functionality that we are going to explore in this
+introductory tutorial by making use of the :command:`ls` command:
+
+cpython  devguide  prog.py  pypy  rm-unused-function.patch
+ctypes_configure  demo  dotviewer  include  lib_pypy  lib-python ...
+drwxr-xr-x 19 wena wena 4096 Feb 18 18:51 cpython
+drwxr-xr-x  4 wena wena 4096 Feb  8 12:04 devguide
+-rwxr-xr-x  1 wena wena  535 Feb 19 00:05 prog.py
+drwxr-xr-x 14 wena wena 4096 Feb  7 00:59 pypy
+-rw-r--r--  1 wena wena  741 Feb 18 01:01 rm-unused-function.patch
+Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
+Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
+
+A few concepts we can learn from the four commands:
+
+* The :command:`ls` command is useful when run without any options at all. It defaults
+to displaying the contents of the current directory.
+
+* If we want beyond what it provides by default, we tell it a bit more. In
+this case, we want it to display a different directory, ``pypy``.
+What we did is specify what is known as a positional argument. It's named so
+because the program should know what to do with the value, solely based on
+where it appears on the command line. This concept is more relevant
+to a command like :command:`cp`, whose most basic usage is ``cp SRC DEST``.
+The first position is *what you want copied,* and the second
+position is *where you want it copied to*.
+
+* Now, say we want to change behaviour of the program. In our example,
+we display more info for each file instead of just showing the file names.
+The ``-l`` in that case is known as an optional argument.
+
+* That's a snippet of the help text. It's very useful in that you can
+come across a program you have never used before, and can figure out
+how it works simply by reading its help text.
+
+Let us start with a very simple example which does (almost) nothing::
+
+parser = argparse.ArgumentParser()
+
+Following is a result of running the code:
+
+-h, --help  show this help message and exit
+prog.py: error: unrecognized arguments: --verbose
+prog.py: error: unrecognized arguments: foo
+
+* Running the script without any options results in nothing displayed to
+
+* The second one starts to display the usefulness of the :mod:`argparse`
+module. We have done almost nothing, but already we get a nice help message.
+
+* The ``--help`` option, which can also be shortened to ``-h``, is the only
+option we get for free (i.e. no need to specify it). Specifying anything
+else results in an error. But even then, we do get a useful usage message,
+
+Introducing Positional arguments
+================================
+
+parser = argparse.ArgumentParser()
+
+prog.py: error: the following arguments are required: echo
+
+-h, --help  show this help message and exit
+
+* We've added the :meth:`~ArgumentParser.add_argument` method, which is what we use to specify
+which command-line options the program is willing to accept. In this case,
+I've named it ``echo`` so that it's in line with its function.
+
+* Calling our program now requires us to specify an option.
+
+* The :meth:`~ArgumentParser.parse_args` method actually returns some data from the
+options specified, in this case, ``echo``.
+
+* The variable is some form of 'magic' that :mod:`argparse` performs for free
+(i.e. no need to specify which variable that value is stored in).
+You will also notice that its name matches the string argument given
+
+Note however that, although the help display looks nice and all, it currently
+is not as helpful as it can be. For example we see that we got ``echo`` as a
+positional argument, but we don't know what it does, other than by guessing or
+by reading the source code. So, let's make it a bit more useful::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("echo", help="echo the string you use here")
+
+echo        echo the string you use here
+
+-h, --help  show this help message and exit
+
+Now, how about doing something even more useful::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", help="display a square of a given number")
+
+Following is a result of running the code:
+
+Traceback (most recent call last):
+File "prog.py", line 5, in <module>
+TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'int'
+
+That didn't go so well. That's because :mod:`argparse` treats the options we
+give it as strings, unless we tell it otherwise. So, let's tell
+:mod:`argparse` to treat that input as an integer::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", help="display a square of a given number",
+
+Following is a result of running the code:
+
+prog.py: error: argument square: invalid int value: 'four'
+
+That went well. The program now even helpfully quits on bad illegal input
+
+Introducing Optional arguments
+==============================
+
+So far we have been playing with positional arguments. Let us
+have a look on how to add optional ones::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbosity", help="increase output verbosity")
+
+$ python prog.py --verbosity 1
+usage: prog.py [-h] [--verbosity VERBOSITY]
+
+-h, --help            show this help message and exit
+usage: prog.py [-h] [--verbosity VERBOSITY]
+prog.py: error: argument --verbosity: expected one argument
+
+* The program is written so as to display something when ``--verbosity`` is
+specified and display nothing when not.
+
+* To show that the option is actually optional, there is no error when running
+the program without it. Note that by default, if an optional argument isn't
+used, the relevant variable, in this case ``args.verbosity``, is
+given ``None`` as a value, which is the reason it fails the truth
+test of the :keyword:`if` statement.
+
+* The help message is a bit different.
+
+* When using the ``--verbosity`` option, one must also specify some value,
+
+The above example accepts arbitrary integer values for ``--verbosity``, but for
+our simple program, only two values are actually useful, ``True`` or ``False``.
+Let's modify the code accordingly::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbose", help="increase output verbosity",
+
+usage: prog.py [-h] [--verbose]
+prog.py: error: unrecognized arguments: 1
+usage: prog.py [-h] [--verbose]
+
+-h, --help  show this help message and exit
+--verbose   increase output verbosity
+
+* The option is now more of a flag than something that requires a value.
+We even changed the name of the option to match that idea.
+Note that we now specify a new keyword, ``action``, and give it the value
+``"store_true"``. This means that, if the option is specified,
+assign the value ``True`` to ``args.verbose``.
+Not specifying it implies ``False``.
+
+* It complains when you specify a value, in true spirit of what flags
+
+* Notice the different help text.
+
+If you are familiar with command line usage,
+you will notice that I haven't yet touched on the topic of short
+versions of the options. It's quite simple::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-v", "--verbose", help="increase output verbosity",
+
+-h, --help     show this help message and exit
+-v, --verbose  increase output verbosity
+
+Note that the new ability is also reflected in the help text.
+
+Combining Positional and Optional arguments
+===========================================
+
+Our program keeps growing in complexity::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display a square of a given number")
+parser.add_argument("-v", "--verbose", action="store_true",
+help="increase output verbosity")
+print(f"the square of {args.square} equals {answer}")
+
+usage: prog.py [-h] [-v] square
+prog.py: error: the following arguments are required: square
+
+* We've brought back a positional argument, hence the complaint.
+
+* Note that the order does not matter.
+
+How about we give this program of ours back the ability to have
+multiple verbosity values, and actually get to use them::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display a square of a given number")
+parser.add_argument("-v", "--verbosity", type=int,
+help="increase output verbosity")
+print(f"the square of {args.square} equals {answer}")
+print(f"{args.square}^2 == {answer}")
+
+usage: prog.py [-h] [-v VERBOSITY] square
+prog.py: error: argument -v/--verbosity: expected one argument
+
+These all look good except the last one, which exposes a bug in our program.
+Let's fix it by restricting the values the ``--verbosity`` option can accept::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display a square of a given number")
+parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2],
+help="increase output verbosity")
+print(f"the square of {args.square} equals {answer}")
+print(f"{args.square}^2 == {answer}")
+
+usage: prog.py [-h] [-v {0,1,2}] square
+prog.py: error: argument -v/--verbosity: invalid choice: 3 (choose from 0, 1, 2)
+usage: prog.py [-h] [-v {0,1,2}] square
+
+square                display a square of a given number
+
+-h, --help            show this help message and exit
+
+Note that the change also reflects both in the error message as well as the
+
+Now, let's use a different approach of playing with verbosity, which is pretty
+common. It also matches the way the CPython executable handles its own
+verbosity argument (check the output of ``python --help``)::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display the square of a given number")
+parser.add_argument("-v", "--verbosity", action="count",
+help="increase output verbosity")
+print(f"the square of {args.square} equals {answer}")
+print(f"{args.square}^2 == {answer}")
+
+We have introduced another action, "count",
+to count the number of occurrences of specific options.
+
+$ python prog.py 4 --verbosity --verbosity
+usage: prog.py [-h] [-v] square
+prog.py: error: unrecognized arguments: 1
+usage: prog.py [-h] [-v] square
+
+square           display a square of a given number
+
+-h, --help       show this help message and exit
+-v, --verbosity  increase output verbosity
+
+* Yes, it's now more of a flag (similar to ``action="store_true"``) in the
+previous version of our script. That should explain the complaint.
+
+* It also behaves similar to "store_true" action.
+
+* Now here's a demonstration of what the "count" action gives. You've probably
+seen this sort of usage before.
+
+* And if you don't specify the ``-v`` flag, that flag is considered to have
+
+* As should be expected, specifying the long form of the flag, we should get
+
+* Sadly, our help output isn't very informative on the new ability our script
+has acquired, but that can always be fixed by improving the documentation for
+our script (e.g. via the ``help`` keyword argument).
+
+* That last output exposes a bug in our program.
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display a square of a given number")
+parser.add_argument("-v", "--verbosity", action="count",
+help="increase output verbosity")
+
+print(f"the square of {args.square} equals {answer}")
+print(f"{args.square}^2 == {answer}")
+
+Traceback (most recent call last):
+File "prog.py", line 11, in <module>
+TypeError: '>=' not supported between instances of 'NoneType' and 'int'
+
+* First output went well, and fixes the bug we had before.
+That is, we want any value >= 2 to be as verbose as possible.
+
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+help="display a square of a given number")
+parser.add_argument("-v", "--verbosity", action="count", default=0,
+help="increase output verbosity")
+print(f"the square of {args.square} equals {answer}")
+print(f"{args.square}^2 == {answer}")
+
+We've just introduced yet another keyword, ``default``.
+We've set it to ``0`` in order to make it comparable to the other int values.
+if an optional argument isn't specified,
+it gets the ``None`` value, and that cannot be compared to an int value
+(hence the :exc:`TypeError` exception).
+
+You can go quite far just with what we've learned so far,
+and we have only scratched the surface.
+The :mod:`argparse` module is very powerful,
+and we'll explore a bit more of it before we end this tutorial.
+
+Getting a little more advanced
+==============================
+
+What if we wanted to expand our tiny program to perform other powers,
+
+parser = argparse.ArgumentParser()
+parser.add_argument("x", type=int, help="the base")
+parser.add_argument("y", type=int, help="the exponent")
+parser.add_argument("-v", "--verbosity", action="count", default=0)
+print(f"{args.x} to the power {args.y} equals {answer}")
+print(f"{args.x}^{args.y} == {answer}")
+
+prog.py: error: the following arguments are required: x, y
+
+-h, --help       show this help message and exit
+
+Notice that so far we've been using verbosity level to *change* the text
+that gets displayed. The following example instead uses verbosity level
+to display *more* text instead::
+
+parser = argparse.ArgumentParser()
+parser.add_argument("x", type=int, help="the base")
+parser.add_argument("y", type=int, help="the exponent")
+parser.add_argument("-v", "--verbosity", action="count", default=0)
+print(f"Running '{__file__}'")
+print(f"{args.x}^{args.y} == ", end="")
+
+.. _specifying-ambiguous-arguments:
+
+Specifying ambiguous arguments
+------------------------------
+
+When there is ambiguity in deciding whether an argument is positional or for an
+argument, ``--`` can be used to tell :meth:`~ArgumentParser.parse_args` that
+everything after that is a positional argument::
+
+>>> parser = argparse.ArgumentParser(prog='PROG')
+>>> parser.add_argument('-n', nargs='+')
+>>> parser.add_argument('args', nargs='*')
+
+>>> # ambiguous, so parse_args assumes it's an option
+usage: PROG [-h] [-n N [N ...]] [args ...]
+PROG: error: unrecognized arguments: -f
+
+>>> parser.parse_args(['--', '-f'])
+Namespace(args=['-f'], n=None)
+
+>>> # ambiguous, so the -n option greedily accepts arguments
+>>> parser.parse_args(['-n', '1', '2', '3'])
+Namespace(args=[], n=['1', '2', '3'])
+
+>>> parser.parse_args(['-n', '1', '--', '2', '3'])
+Namespace(args=['2', '3'], n=['1'])
+
+So far, we have been working with two methods of an
+:class:`argparse.ArgumentParser` instance. Let's introduce a third one,
+:meth:`~ArgumentParser.add_mutually_exclusive_group`. It allows for us to specify options that
+conflict with each other. Let's also change the rest of the program so that
+the new functionality makes more sense:
+we'll introduce the ``--quiet`` option,
+which will be the opposite of the ``--verbose`` one::
+
+parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-v", "--verbose", action="store_true")
+group.add_argument("-q", "--quiet", action="store_true")
+parser.add_argument("x", type=int, help="the base")
+parser.add_argument("y", type=int, help="the exponent")
+
+print(f"{args.x} to the power {args.y} equals {answer}")
+print(f"{args.x}^{args.y} == {answer}")
+
+Our program is now simpler, and we've lost some functionality for the sake of
+demonstration. Anyways, here's the output:
+
+usage: prog.py [-h] [-v | -q] x y
+prog.py: error: argument -q/--quiet: not allowed with argument -v/--verbose
+$ python prog.py 4 2 -v --quiet
+usage: prog.py [-h] [-v | -q] x y
+prog.py: error: argument -q/--quiet: not allowed with argument -v/--verbose
+
+That should be easy to follow. I've added that last output so you can see the
+sort of flexibility you get, i.e. mixing long form options with short form
+
+Before we conclude, you probably want to tell your users the main purpose of
+your program, just in case they don't know::
+
+parser = argparse.ArgumentParser(description="calculate X to the power of Y")
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-v", "--verbose", action="store_true")
+group.add_argument("-q", "--quiet", action="store_true")
+parser.add_argument("x", type=int, help="the base")
+parser.add_argument("y", type=int, help="the exponent")
+
+print(f"{args.x} to the power {args.y} equals {answer}")
+print(f"{args.x}^{args.y} == {answer}")
+
+Note that slight difference in the usage text. Note the ``[-v | -q]``,
+which tells us that we can either use ``-v`` or ``-q``,
+but not both at the same time:
+
+usage: prog.py [-h] [-v | -q] x y
+
+-h, --help     show this help message and exit
+
+How to translate the argparse output
+====================================
+
+The output of the :mod:`argparse` module such as its help text and error
+messages are all made translatable using the :mod:`gettext` module. This
+allows applications to easily localize messages produced by
+:mod:`argparse`. See also :ref:`i18n-howto`.
+
+For instance, in this :mod:`argparse` output:
+
+usage: prog.py [-h] [-v | -q] x y
+
+-h, --help     show this help message and exit
+
+The strings ``usage:``, ``positional arguments:``, ``options:`` and
+``show this help message and exit`` are all translatable.
+
+In order to translate these strings, they must first be extracted
+into a ``.po`` file. For example, using `Babel <https://babel.pocoo.org/>`__,
+
+$ pybabel extract -o messages.po /usr/lib/python3.12/argparse.py
+
+This command will extract all translatable strings from the :mod:`argparse`
+module and output them into a file named ``messages.po``. This command assumes
+that your Python installation is in ``/usr/lib``.
+
+You can find out the location of the :mod:`argparse` module on your system
+
+Once the messages in the ``.po`` file are translated and the translations are
+installed using :mod:`gettext`, :mod:`argparse` will be able to display the
+
+To translate your own strings in the :mod:`argparse` output, use :mod:`gettext`.
+
+The :mod:`argparse` module allows you to specify custom type converters for
+your command-line arguments. This allows you to modify user input before it's
+stored in the :class:`argparse.Namespace`. This can be useful when you need to
+pre-process the input before it is used in your program.
+
+When using a custom type converter, you can use any callable that takes a
+single string argument (the argument value) and returns the converted value.
+However, if you need to handle more complex scenarios, you can use a custom
+action class with the **action** parameter instead.
+
+For example, let's say you want to handle arguments with different prefixes and
+
+parser = argparse.ArgumentParser(prefix_chars='-+')
+
+parser.add_argument('-a', metavar='<value>', action='append',
+parser.add_argument('+a', metavar='<value>', action='append',
+
+$ python prog.py -a value1 +a value2
+Namespace(a=[('-', 'value1'), ('+', 'value2')])
+
+* Created a parser with custom prefix characters using the ``prefix_chars``
+
+* Defined two arguments, ``-a`` and ``+a``, which used the ``type`` parameter to
+create custom type converters to store the value in a tuple with the prefix.
+
+Without the custom type converters, the arguments would have treated the ``-a``
+and ``+a`` as the same argument, which would have been undesirable. By using custom
+type converters, we were able to differentiate between the two arguments.
+
+The :mod:`argparse` module offers a lot more than shown here.
+Its docs are quite detailed and thorough, and full of examples.
+Having gone through this tutorial, you should easily digest them

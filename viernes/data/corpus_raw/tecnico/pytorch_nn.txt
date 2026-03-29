@@ -1,0 +1,143 @@
+===================================
+
+These are the basic building blocks for graphs:
+
+~parameter.UninitializedParameter
+~parameter.UninitializedBuffer
+
+----------------------------------
+
+.. currentmodule:: torch.nn.modules.module
+
+register_module_forward_pre_hook
+register_module_full_backward_pre_hook
+register_module_full_backward_hook
+register_module_buffer_registration_hook
+register_module_module_registration_hook
+register_module_parameter_registration_hook
+
+----------------------------------
+
+----------------------------------
+
+Non-linear Activations (weighted sum, nonlinearity)
+---------------------------------------------------
+
+Non-linear Activations (other)
+------------------------------
+
+----------------------------------
+
+----------------------------------
+
+----------------------------------
+
+nn.TripletMarginWithDistanceLoss
+
+DataParallel Layers (multi-GPU, distributed)
+--------------------------------------------
+.. automodule:: torch.nn.parallel
+
+nn.parallel.DistributedDataParallel
+
+.. automodule:: torch.nn.utils
+
+From the ``torch.nn.utils`` module:
+
+Utility functions to clip parameter gradients.
+
+.. currentmodule:: torch.nn.utils
+
+Utility functions to flatten and unflatten Module parameters to and from a single vector.
+
+Utility functions to fuse Modules with BatchNorm modules.
+
+Utility functions to convert Module parameter memory formats.
+
+convert_conv2d_weight_memory_format
+convert_conv3d_weight_memory_format
+
+Utility functions to apply and remove weight normalization from Module parameters.
+
+Utility functions for initializing Module parameters.
+
+Utility classes and functions for pruning Module parameters.
+
+Parametrizations implemented using the new parametrization functionality
+in :func:`torch.nn.utils.parameterize.register_parametrization`.
+
+parametrizations.spectral_norm
+
+Utility functions to parametrize Tensors on existing Modules.
+Note that these functions can be used to parametrize a given Parameter
+or Buffer given a specific function that maps from an input space to the
+parametrized space. They are not parameterizations that would transform
+an object into a parameter. See the
+`Parametrizations tutorial <https://pytorch.org/tutorials/intermediate/parametrizations.html>`_
+for more information on how to implement your own parametrizations.
+
+parametrize.register_parametrization
+parametrize.remove_parametrizations
+parametrize.transfer_parametrizations_and_params
+parametrize.type_before_parametrizations
+
+parametrize.ParametrizationList
+
+Utility functions to call a given Module in a stateless manner.
+
+Utility functions in other modules
+
+nn.utils.rnn.pack_padded_sequence
+nn.utils.rnn.pad_packed_sequence
+nn.utils.rnn.invert_permutation
+
+Quantization refers to techniques for performing computations and storing tensors at lower bitwidths than
+floating point precision. PyTorch supports both per tensor and per channel asymmetric linear quantization. To learn more how to use quantized functions in PyTorch, please refer to the :ref:`quantization-doc` documentation.
+
+nn.modules.lazy.LazyModuleMixin
+
+.. This module needs to be documented. Adding here in the meantime
+.. py:module:: torch.nn.backends
+.. py:module:: torch.nn.utils.stateless
+.. py:module:: torch.nn.backends.thnn
+.. py:module:: torch.nn.common_types
+.. py:module:: torch.nn.functional
+.. py:module:: torch.nn.modules.activation
+.. py:module:: torch.nn.modules.adaptive
+.. py:module:: torch.nn.modules.batchnorm
+.. py:module:: torch.nn.modules.channelshuffle
+.. py:module:: torch.nn.modules.container
+.. py:module:: torch.nn.modules.conv
+.. py:module:: torch.nn.modules.distance
+.. py:module:: torch.nn.modules.dropout
+.. py:module:: torch.nn.modules.flatten
+.. py:module:: torch.nn.modules.fold
+.. py:module:: torch.nn.modules.instancenorm
+.. py:module:: torch.nn.modules.lazy
+.. py:module:: torch.nn.modules.linear
+.. py:module:: torch.nn.modules.loss
+.. py:module:: torch.nn.modules.module
+.. py:module:: torch.nn.modules.normalization
+.. py:module:: torch.nn.modules.padding
+.. py:module:: torch.nn.modules.pixelshuffle
+.. py:module:: torch.nn.modules.pooling
+.. py:module:: torch.nn.modules.rnn
+.. py:module:: torch.nn.modules.sparse
+.. py:module:: torch.nn.modules.transformer
+.. py:module:: torch.nn.modules.upsampling
+.. py:module:: torch.nn.modules.utils
+.. py:module:: torch.nn.parallel.comm
+.. py:module:: torch.nn.parallel.distributed
+.. py:module:: torch.nn.parallel.parallel_apply
+.. py:module:: torch.nn.parallel.replicate
+.. py:module:: torch.nn.parallel.scatter_gather
+.. py:module:: torch.nn.parameter
+.. py:module:: torch.nn.utils.clip_grad
+.. py:module:: torch.nn.utils.convert_parameters
+.. py:module:: torch.nn.utils.fusion
+.. py:module:: torch.nn.utils.init
+.. py:module:: torch.nn.utils.memory_format
+.. py:module:: torch.nn.utils.parametrizations
+.. py:module:: torch.nn.utils.parametrize
+.. py:module:: torch.nn.utils.prune
+.. py:module:: torch.nn.utils.rnn

@@ -86,10 +86,10 @@ def main() -> int:
     project_root = repo_root.parent
 
     sources: list[tuple[str, Path, set[str]]] = [
-        ("tecnico", project_root / "viernes" / "data" / "corpus" / "tecnico", {".txt", ".md"}),
-        ("herramientas", project_root / "viernes" / "data" / "corpus" / "herramientas", {".txt", ".md"}),
-        ("conversacion", project_root / "viernes" / "data" / "corpus" / "conversacion", {".txt", ".md"}),
-        ("proyecto", project_root / "viernes" / "data" / "corpus" / "proyecto", {".txt", ".md"}),
+        ("tecnico", project_root / "viernes" / "data" / "corpus_raw" / "tecnico", {".txt", ".md", ".rst"}),
+        ("herramientas", project_root / "viernes" / "data" / "corpus_raw" / "herramientas", {".txt", ".md", ".rst"}),
+        ("conversacion", project_root / "viernes" / "data" / "corpus_raw" / "conversacion", {".txt", ".md", ".rst"}),
+        ("proyecto", project_root / "viernes" / "data" / "corpus_raw" / "proyecto", {".txt", ".md", ".rst"}),
         ("viernes", viernes_root, {".py", ".md"}),
     ]
 

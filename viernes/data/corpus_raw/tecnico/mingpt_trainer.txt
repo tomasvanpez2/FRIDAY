@@ -1,0 +1,53 @@
+Simple training loop; Boilerplate that could apply to any arbitrary neural network,
+so nothing in this file really has anything to do with GPT specifically.
+
+from collections import defaultdict
+
+from torch.utils.data.dataloader import DataLoader
+from mingpt.utils import CfgNode as CN
+
+C.weight_decay = 0.1 # only applied on matmul weights
+
+def __init__(self, config, model, train_dataset):
+self.train_dataset = train_dataset
+self.callbacks = defaultdict(list)
+
+# determine the device we'll train on
+self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+self.model = self.model.to(self.device)
+print("running on device", self.device)
+
+# variables that will be assigned to trainer class later for logging and etc
+
+def add_callback(self, onevent: str, callback):
+self.callbacks[onevent].append(callback)
+
+def set_callback(self, onevent: str, callback):
+self.callbacks[onevent] = [callback]
+
+def trigger_callbacks(self, onevent: str):
+for callback in self.callbacks.get(onevent, []):
+
+model, config = self.model, self.config
+
+self.optimizer = model.configure_optimizers(config)
+
+sampler=torch.utils.data.RandomSampler(self.train_dataset, replacement=True, num_samples=int(1e10)),
+num_workers=config.num_workers,
+
+data_iter = iter(train_loader)
+
+# fetch the next batch (x, y) and re-init iterator if needed
+data_iter = iter(train_loader)
+batch = [t.to(self.device) for t in batch]
+
+logits, self.loss = model(x, y)
+
+# backprop and update the parameters
+model.zero_grad(set_to_none=True)
+torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_norm_clip)
+
+self.trigger_callbacks('on_batch_end')
+self.iter_dt = tnow - self.iter_time
+
+if config.max_iters is not None and self.iter_num >= config.max_iters:

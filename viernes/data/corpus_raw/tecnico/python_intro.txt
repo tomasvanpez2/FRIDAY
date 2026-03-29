@@ -1,0 +1,357 @@
+3. An Informal Introduction to Python — Python 3.14.3 documentation
+
+3. An Informal Introduction to Python
+
+3.1. Using Python as a Calculator
+
+3.2. First Steps Towards Programming
+
+2. Using the Python Interpreter
+
+3. An Informal Introduction to Python
+
+3. An Informal Introduction to Python¶
+
+In the following examples, input and output are distinguished by the presence or
+absence of prompts (>>> and …): to repeat the example, you must type
+everything after the prompt, when the prompt appears; lines that do not begin
+with a prompt are output from the interpreter. Note that a secondary prompt on a
+line by itself in an example means you must type a blank line; this is used to
+
+You can use the “Copy” button (it appears in the upper-right corner
+when hovering over or tapping a code example), which strips prompts
+and omits output, to copy and paste the input lines into your interpreter.
+
+Many of the examples in this manual, even those entered at the interactive
+prompt, include comments.  Comments in Python start with the hash character,
+
+#, and extend to the end of the physical line.  A comment may appear at the
+start of a line or following whitespace or code, but not within a string
+literal.  A hash character within a string literal is just a hash character.
+Since comments are to clarify code and are not interpreted by Python, they may
+be omitted when typing in examples.
+
+spam = 1  # and this is the second comment
+text = "# This is not a comment because it's inside quotes."
+
+3.1. Using Python as a Calculator¶
+
+Let’s try some simple Python commands.  Start the interpreter and wait for the
+>>>.  (It shouldn’t take long.)
+
+The interpreter acts as a simple calculator: you can type an expression into it
+and it will write the value.  Expression syntax is straightforward: the
+
+>>> 8 / 5  # division always returns a floating-point number
+
+the ones with a fractional part (e.g.
+
+float.  We will see more about numeric types later in the tutorial.
+
+/) always returns a float.  To do floor division and
+get an integer result you can use the
+
+>>> 17 / 3  # classic division returns a float
+>>> 17 // 3  # floor division discards the fractional part
+>>> 17 % 3  # the % operator returns the remainder of the division
+>>> 5 * 3 + 2  # floored quotient * divisor + remainder
+
+With Python, it is possible to use the
+** operator to calculate powers [1]:
+
+>>> 2 ** 7  # 2 to the power of 7
+
+=) is used to assign a value to a variable. Afterwards, no
+result is displayed before the next interactive prompt:
+
+If a variable is not “defined” (assigned a value), trying to use it will
+
+>>> n  # try to access an undefined variable
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'n' is not defined
+
+There is full support for floating point; operators with mixed type operands
+convert the integer operand to floating point:
+
+In interactive mode, the last printed expression is assigned to the variable
+
+_.  This means that when you are using Python as a desk calculator, it is
+somewhat easier to continue calculations, for example:
+
+This variable should be treated as read-only by the user.  Don’t explicitly
+assign a value to it — you would create an independent local variable with the
+same name masking the built-in variable with its magic behavior.
+
+float, Python supports other types of
+Python also has built-in support for complex numbers,
+J suffix to indicate the imaginary part
+
+Python can manipulate text (represented by type
+“strings”) as well as numbers.  This includes characters “
+Yay! :)”. They can be enclosed in single quotes (
+"...") with the same result [2].
+
+>>> 'spam eggs'  # single quotes
+>>> "Paris rabbit got your back :)! Yay!"  # double quotes
+'Paris rabbit got your back :)! Yay!'
+>>> '1975'  # digits and numerals enclosed in quotes are also strings
+
+To quote a quote, we need to “escape” it, by preceding it with
+Alternatively, we can use the other type of quotation marks:
+
+>>> 'doesn\'t'  # use \' to escape the single quote...
+>>> "doesn't"  # ...or use double quotes instead
+
+In the Python shell, the string definition and output string can look
+print() function produces a more readable output, by
+omitting the enclosing quotes and by printing escaped and special characters:
+
+>>> s = 'First line.\nSecond line.'  # \n means newline
+>>> s  # without print(), special characters are included in the string
+>>> print(s)  # with print(), special characters are interpreted, so \n produces new line
+
+If you don’t want characters prefaced by
+special characters, you can use raw strings by adding an
+
+>>> print('C:\this\name')  # here \t means tab, \n means newline
+>>> print(r'C:\this\name')  # note the r before the quote
+
+There is one subtle aspect to raw strings: a raw string may not end in
+the FAQ entry for more information
+
+String literals can span multiple lines.  One way is using triple-quotes:
+
+'''...'''.  End-of-line characters are automatically
+included in the string, but it’s possible to prevent this by adding a
+the end of the line.  In the following example, the initial newline is not
+
+...      -h                        Display this usage message
+...      -H hostname               Hostname to connect to
+-h                        Display this usage message
+-H hostname               Hostname to connect to
+
+Strings can be concatenated (glued together) with the
+
+>>> # 3 times 'un', followed by 'ium'
+
+Two or more string literals (i.e. the ones enclosed between quotes) next
+to each other are automatically concatenated.
+
+This feature is particularly useful when you want to break long strings:
+
+>>> text = ('Put several strings within parentheses '
+...         'to have them joined together.')
+'Put several strings within parentheses to have them joined together.'
+
+This only works with two literals though, not with variables or expressions:
+
+>>> prefix 'thon'  # can't concatenate a variable and a string literal
+
+If you want to concatenate variables or a variable and a literal, use
+
+Strings can be indexed (subscripted), with the first character having index 0.
+There is no separate character type; a character is simply a string of size
+
+>>> word[0]  # character in position 0
+>>> word[5]  # character in position 5
+
+Indices may also be negative numbers, to start counting from the right:
+
+>>> word[-1]  # last character
+>>> word[-2]  # second-last character
+
+Note that since -0 is the same as 0, negative indices start from -1.
+
+In addition to indexing, slicing is also supported.  While indexing is used
+to obtain individual characters, slicing allows you to obtain a substring:
+
+>>> word[0:2]  # characters from position 0 (included) to 2 (excluded)
+>>> word[2:5]  # characters from position 2 (included) to 5 (excluded)
+
+Slice indices have useful defaults; an omitted first index defaults to zero, an
+omitted second index defaults to the size of the string being sliced.
+
+>>> word[:2]   # character from the beginning to position 2 (excluded)
+>>> word[4:]   # characters from position 4 (included) to the end
+>>> word[-2:]  # characters from the second-last (included) to the end
+
+Note how the start is always included, and the end always excluded.  This
+s[:i] + s[i:] is always equal to
+
+One way to remember how slices work is to think of the indices as pointing
+between characters, with the left edge of the first character numbered 0.
+Then the right edge of the last character of a string of n characters has
+
+The first row of numbers gives the position of the indices 0…6 in the string;
+the second row gives the corresponding negative indices. The slice from i to
+j consists of all characters between the edges labeled i and j,
+
+For non-negative indices, the length of a slice is the difference of the
+indices, if both are within bounds.  For example, the length of
+
+Attempting to use an index that is too large will result in an error:
+
+>>> word[42]  # the word only has 6 characters
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+IndexError: string index out of range
+
+However, out of range slice indexes are handled gracefully when used for
+
+Python strings cannot be changed — they are immutable.
+Therefore, assigning to an indexed position in the string results in an error:
+
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+
+If you need a different string, you should create a new one:
+
+len() returns the length of a string:
+
+>>> s = 'supercalifragilisticexpialidocious'
+
+Strings are examples of sequence types, and support the common
+operations supported by such types.
+
+Strings support a large number of methods for
+basic transformations and searching.
+
+String literals that have embedded expressions.
+
+Information about string formatting with
+
+printf-style String Formatting
+The old formatting operations invoked when strings are
+% operator are described in more detail here.
+
+Python knows a number of compound data types, used to group together other
+values.  The most versatile is the list, which can be written as a list of
+comma-separated values (items) between square brackets.  Lists might contain
+items of different types, but usually the items all have the same type.
+
+>>> squares = [1, 4, 9, 16, 25]
+
+Like strings (and all other built-in sequence types), lists can be
+
+>>> squares[0]  # indexing returns the item
+>>> squares[-3:]  # slicing returns a new list
+
+Lists also support operations like concatenation:
+
+>>> squares + [36, 49, 64, 81, 100]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+Unlike strings, which are immutable, lists are a mutable
+type, i.e. it is possible to change their content:
+
+>>> cubes = [1, 8, 27, 65, 125]  # something's wrong here
+>>> 4 ** 3  # the cube of 4 is 64, not 65!
+>>> cubes[3] = 64  # replace the wrong value
+
+You can also add new items at the end of the list, by using
+list.append() method (we will see more about methods later):
+
+>>> cubes.append(216)  # add the cube of 6
+>>> cubes.append(7 ** 3)  # and the cube of 7
+
+Simple assignment in Python never copies data. When you assign a list
+to a variable, the variable refers to the existing list.
+Any changes you make to the list through one variable will be seen
+through all other variables that refer to it.:
+
+>>> rgb = ["Red", "Green", "Blue"]
+>>> id(rgb) == id(rgba)  # they reference the same object
+["Red", "Green", "Blue", "Alph"]
+
+All slice operations return a new list containing the requested elements.  This
+means that the following slice returns a
+
+>>> correct_rgba[-1] = "Alpha"
+["Red", "Green", "Blue", "Alpha"]
+["Red", "Green", "Blue", "Alph"]
+
+Assignment to slices is also possible, and this can even change the size of the
+
+>>> letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+['a', 'b', 'c', 'd', 'e', 'f', 'g']
+>>> letters[2:5] = ['C', 'D', 'E']
+['a', 'b', 'C', 'D', 'E', 'f', 'g']
+>>> # clear the list by replacing all the elements with an empty list
+
+>>> letters = ['a', 'b', 'c', 'd']
+
+It is possible to nest lists (create lists containing other lists), for
+
+3.2. First Steps Towards Programming¶
+
+Of course, we can use Python for more complicated tasks than adding two and two
+together.  For instance, we can write an initial sub-sequence of the
+
+>>> # the sum of two elements defines the next
+
+This example introduces several new features.
+
+The first line contains a multiple assignment: the variables
+simultaneously get the new values 0 and 1.  On the last line this is used again,
+demonstrating that the expressions on the right-hand side are all evaluated
+first before any of the assignments take place.  The right-hand side expressions
+are evaluated  from the left to the right.
+
+while loop executes as long as the condition (here:
+remains true.  In Python, like in C, any non-zero integer value is true; zero is
+false.  The condition may also be a string or list value, in fact any sequence;
+anything with a non-zero length is true, empty sequences are false.  The test
+used in the example is a simple comparison.  The standard comparison operators
+
+The body of the loop is indented: indentation is Python’s way of grouping
+statements.  At the interactive prompt, you have to type a tab or space(s) for
+each indented line.  In practice you will prepare more complicated input
+for Python with a text editor; all decent text editors have an auto-indent
+facility.  When a compound statement is entered interactively, it must be
+followed by a blank line to indicate completion (since the parser cannot
+guess when you have typed the last line).  Note that each line within a basic
+block must be indented by the same amount.
+
+print() function writes the value of the argument(s) it is given.
+It differs from just writing the expression you want to write (as we did
+earlier in the calculator examples) in the way it handles multiple arguments,
+floating-point quantities, and strings.  Strings are printed without quotes,
+and a space is inserted between items, so you can format things nicely, like
+
+>>> print('The value of i is', i)
+
+The keyword argument end can be used to avoid the newline after the output,
+or end the output with a different string:
+
+0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,
+
+Unlike other languages, special characters such as
+same meaning with both single (
+The only difference between the two is that within single quotes you don’t
+
+3. An Informal Introduction to Python
+
+3.1. Using Python as a Calculator
+
+3.2. First Steps Towards Programming
+
+2. Using the Python Interpreter
+
+3. An Informal Introduction to Python
+
+© Copyright 2001 Python Software Foundation.
+
+This page is licensed under the Python Software Foundation License Version 2.
+
+Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+
+See History and License for more information.
+
+The Python Software Foundation is a non-profit corporation.
+
+Last updated on Mar 26, 2026 (22:22 UTC).

@@ -1,0 +1,281 @@
+******************************************
+The N-dimensional array (:class:`ndarray`)
+******************************************
+
+An :class:`ndarray` is a (usually fixed-size) multidimensional
+container of items of the same type and size. The number of dimensions
+and items in an array is defined by its :attr:`shape <ndarray.shape>`,
+which is a :class:`tuple` of *N* non-negative integers that specify the
+sizes of each dimension. The type of items in the array is specified by
+a separate :ref:`data-type object (dtype) <arrays.dtypes>`, one of which
+is associated with each ndarray.
+
+As with other container objects in Python, the contents of an
+:class:`ndarray` can be accessed and modified by :ref:`indexing or
+slicing <arrays.indexing>` the array (using, for example, *N* integers),
+and via the methods and attributes of the :class:`ndarray`.
+
+Different :class:`ndarrays <ndarray>` can share the same data, so that
+changes made in one :class:`ndarray` may be visible in another. That
+is, an ndarray can be a *"view"* to another ndarray, and the data it
+is referring to is taken care of by the *"base"* ndarray. ndarrays can
+also be views to memory owned by Python :class:`strings <str>` or
+objects implementing the :class:`memoryview` or :ref:`array
+<arrays.interface>` interfaces.
+
+A 2-dimensional array of size 2 x 3, composed of 4-byte integer
+
+>>> x = np.array([[1, 2, 3], [4, 5, 6]], np.int32)
+
+The array can be indexed using Python container-like syntax:
+
+>>> # The element of x in the *second* row, *third* column, namely, 6.
+
+For example :ref:`slicing <arrays.indexing>` can produce views of
+
+>>> y[0] = 9 # this also changes the corresponding element in x
+
+New arrays can be constructed using the routines detailed in
+:ref:`routines.array-creation`, and also by using the low-level
+
+Arrays can be indexed using an extended Python slicing syntax,
+``array[selection]``.  Similar syntax is also used for accessing
+fields in a :term:`structured data type`.
+
+.. seealso:: :ref:`Array Indexing <arrays.indexing>`.
+
+Internal memory layout of an ndarray
+====================================
+
+An instance of class :class:`ndarray` consists of a contiguous
+one-dimensional segment of computer memory (owned by the array, or by
+some other object), combined with an indexing scheme that maps *N*
+integers into the location of an item in the block.  The ranges in
+which the indices can vary is specified by the :obj:`shape
+<ndarray.shape>` of the array. How many bytes each item takes and how
+the bytes are interpreted is defined by the :ref:`data-type object
+<arrays.dtypes>` associated with the array.
+
+.. index:: C-order, Fortran-order, row-major, column-major, stride,
+
+A segment of memory is inherently 1-dimensional, and there are many
+different schemes for arranging the items of an *N*-dimensional array
+in a 1-dimensional block. NumPy is flexible, and :class:`ndarray`
+objects can accommodate any *strided indexing scheme*. In a strided
+scheme, the N-dimensional index :math:`(n_0, n_1, ..., n_{N-1})`
+corresponds to the offset (in bytes):
+
+.. math:: n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
+
+from the beginning of the memory block associated with the
+array. Here, :math:`s_k` are integers which specify the :obj:`strides
+<ndarray.strides>` of the array. The :term:`column-major` order (used,
+for example, in the Fortran language and in *Matlab*) and
+:term:`row-major` order (used in C) schemes are just specific kinds of
+strided scheme, and correspond to memory that can be *addressed* by the strides:
+
+s_k^{\mathrm{column}} = \mathrm{itemsize} \prod_{j=0}^{k-1} d_j ,
+\quad  s_k^{\mathrm{row}} = \mathrm{itemsize} \prod_{j=k+1}^{N-1} d_j .
+
+.. index:: single-segment, contiguous, non-contiguous
+
+where :math:`d_j` `= self.shape[j]`.
+
+Both the C and Fortran orders are :term:`contiguous`, *i.e.,*
+single-segment, memory layouts, in which every part of the
+memory block can be accessed by some combination of the indices.
+
+*Contiguous arrays* and *single-segment arrays* are synonymous
+and are used interchangeably throughout the documentation.
+
+While a C-style and Fortran-style contiguous array, which has the corresponding
+flags set, can be addressed with the above strides, the actual strides may be
+different. This can happen in two cases:
+
+1. If ``self.shape[k] == 1`` then for any legal index ``index[k] == 0``.
+This means that in the formula for the offset :math:`n_k = 0` and thus
+:math:`s_k n_k = 0` and the value of :math:`s_k` `= self.strides[k]` is
+2. If an array has no elements (``self.size == 0``) there is no legal
+index and the strides are never used. Any array with no elements may be
+considered C-style and Fortran-style contiguous.
+
+Point 1. means that ``self`` and ``self.squeeze()`` always have the same
+contiguity and ``aligned`` flags value. This also means
+that even a high dimensional array could be C-style and Fortran-style
+
+An array is considered aligned if the memory offsets for all elements and the
+base offset itself is a multiple of `self.itemsize <ndarray.itemsize>`. Understanding
+*memory-alignment* leads to better performance on most hardware.
+
+It does *not* generally hold that ``self.strides[-1] == self.itemsize``
+for C-style contiguous arrays or ``self.strides[0] == self.itemsize`` for
+Fortran-style contiguous arrays is true.
+
+Data in new :class:`ndarrays <ndarray>` is in the :term:`row-major` (C)
+order, unless otherwise specified, but, for example, :ref:`basic
+array slicing <arrays.indexing>` often produces :term:`views <view>`
+
+.. seealso: :ref:`Indexing <arrays.ndarray.indexing>`_
+
+Several algorithms in NumPy work on arbitrarily strided arrays.
+However, some algorithms require single-segment arrays. When an
+irregularly strided array is passed in to such algorithms, a copy
+
+.. _arrays.ndarray.attributes:
+
+Array attributes reflect information that is intrinsic to the array
+itself. Generally, accessing an array through its attributes allows
+you to get and sometimes set intrinsic properties of the array without
+creating a new array. The exposed attributes are the core parts of an
+array and only some of them can be reset meaningfully without creating
+a new array. Information on each attribute is given below.
+
+The following attributes contain information about the memory layout
+
+.. seealso:: :ref:`Data type objects <arrays.dtypes>`
+
+The data type object associated with the array can be found in the
+:attr:`dtype <ndarray.dtype>` attribute:
+
+.. _arrays.ndarray.array-interface:
+
+.. seealso:: :ref:`arrays.interface`.
+
+==================================  ===================================
+:obj:`~object.__array_interface__`  Python-side of the array interface
+:obj:`~object.__array_struct__`     C-side of the array interface
+==================================  ===================================
+
+:mod:`ctypes` foreign function interface
+----------------------------------------
+
+An :class:`ndarray` object has many methods which operate on or with
+the array in some fashion, typically returning an array result. These
+methods are briefly explained below. (Each method's docstring has a
+
+For the following methods there are also corresponding functions in
+:mod:`numpy`: :func:`all`, :func:`any`, :func:`argmax`,
+:func:`argmin`, :func:`argpartition`, :func:`argsort`, :func:`choose`,
+:func:`clip`, :func:`compress`, :func:`copy`, :func:`cumprod`,
+:func:`cumsum`, :func:`diagonal`, :func:`imag`, :func:`max <amax>`,
+:func:`mean`, :func:`min <amin>`, :func:`nonzero`, :func:`partition`,
+:func:`prod`, :func:`put`, :func:`ravel`, :func:`real`,
+:func:`repeat`, :func:`reshape`, :func:`round <around>`,
+:func:`searchsorted`, :func:`sort`, :func:`squeeze`, :func:`std`,
+:func:`sum`, :func:`swapaxes`, :func:`take`, :func:`trace`,
+:func:`transpose`, :func:`var`.
+
+For reshape, resize, and transpose, the single tuple argument may be
+replaced with ``n`` integers which will be interpreted as an n-tuple.
+
+Item selection and manipulation
+-------------------------------
+
+For array methods that take an *axis* keyword, it defaults to
+*None*. If axis is *None*, then the array is treated as a 1-D
+array. Any other value for *axis* represents the dimension along which
+
+Many of these methods take an argument named *axis*. In such cases,
+
+- If *axis* is *None* (the default), the array is treated as a 1-D
+array and the operation is performed over the entire array. This
+behavior is also the default if self is a 0-dimensional array or
+array scalar. (An array scalar is an instance of the types/classes
+float32, float64, etc., whereas a 0-dimensional array is an ndarray
+instance containing precisely one array scalar.)
+
+- If *axis* is an integer, then the operation is done over the given
+axis (for each 1-D subarray that can be created along the given axis).
+
+.. admonition:: Example of the *axis* argument
+
+A 3-dimensional array of size 3 x 3 x 3, summed over each of its
+
+>>> x = np.arange(27).reshape((3,3,3))
+>>> # for sum, axis is the first keyword, so we may omit it,
+>>> # specifying only its value
+>>> x.sum(0), x.sum(1), x.sum(2)
+
+The parameter *dtype* specifies the data type over which a reduction
+operation (like summing) should take place. The default reduce data
+type is the same as the data type of *self*. To avoid overflow, it can
+be useful to perform the reduction using a larger data type.
+
+For several methods, an optional *out* argument can also be provided
+and the result will be placed into the output array given. The *out*
+argument must be an :class:`ndarray` and have the same number of
+elements. It can have a different data type in which case casting will
+
+Arithmetic, matrix multiplication, and comparison operations
+============================================================
+
+.. index:: comparison, arithmetic, matrix, operation, operator
+
+Arithmetic and comparison operations on :class:`ndarrays <ndarray>`
+are defined as element-wise operations, and generally yield
+:class:`ndarray` objects as results.
+
+Each of the arithmetic operations (``+``, ``-``, ``*``, ``/``, ``//``,
+``%``, ``divmod()``, ``**`` or ``pow()``, ``<<``, ``>>``, ``&``,
+``^``, ``|``, ``~``) and the comparisons (``==``, ``<``, ``>``,
+``<=``, ``>=``, ``!=``) is equivalent to the corresponding
+universal function (or :term:`ufunc` for short) in NumPy.  For
+more information, see the section on :ref:`Universal Functions
+
+Truth value of an array (:class:`bool() <bool>`):
+
+Truth-value testing of an array invokes
+:meth:`ndarray.__bool__`, which raises an error if the number of
+elements in the array is not 1, because the truth value
+of such arrays is ambiguous. Use :meth:`.any() <ndarray.any>` and
+:meth:`.all() <ndarray.all>` instead to be clear about what is meant
+in such cases. (If you wish to check for whether an array is empty,
+use for example ``.size > 0``.)
+
+- Any third argument to :func:`pow()` is silently ignored,
+as the underlying :func:`ufunc <power>` takes only two arguments.
+
+- Because :class:`ndarray` is a built-in type (written in C), the
+``__r{op}__`` special methods are not directly defined.
+
+- The functions called to implement many arithmetic special methods
+for arrays can be modified using :class:`__array_ufunc__ <numpy.class.__array_ufunc__>`.
+
+In place operations will perform the calculation using the
+precision decided by the data type of the two operands, but will
+silently downcast the result (if necessary) so it can fit back into
+the array.  Therefore, for mixed precision calculations, ``A {op}=
+B`` can be different than ``A = A {op} B``. For example, suppose
+``a = ones((3,3))``. Then, ``a += 3j`` is different than ``a = a +
+3j``: while they both perform the same computation, ``a += 3``
+casts the result to fit back in ``a``, whereas ``a = a + 3j``
+re-binds the name ``a`` to the result.
+
+Matrix operators ``@`` and ``@=`` were introduced in Python 3.5
+following :pep:`465`, and the ``@`` operator has been introduced in NumPy
+1.10.0. Further information can be found in the :func:`matmul` documentation.
+
+For standard library functions:
+
+Container customization: (see :ref:`Indexing <arrays.indexing>`)
+
+Conversion; the operations :class:`int() <int>`,
+:class:`float() <float>` and :class:`complex() <complex>`.
+They work only on arrays that have one element in them
+and return the appropriate scalar.
+
+.. _arrays.ndarray.pattern-matching:
+
+Arrays support :pep:`structural pattern matching <634>`. The array is matched
+as a sequence, so you can unpack arrays along the first dimension in
+``match``/``case`` statements::
+
+>>> arr = np.array([[1, 2], [3, 4]])
+...         print(f"row1={row1}, row2={row2}")
+
+Nested patterns work too, matching inner dimensions::
+
+...     case [[a, b], [c, d]]:
+...         print(f"a={a}, b={b}, c={c}, d={d}")
+
+All ndarray subclasses inherit this behavior.
