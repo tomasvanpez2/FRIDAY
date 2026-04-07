@@ -1,391 +1,79 @@
-## VIERNES OS - Descripción Total del Proyecto
+# 📁 VIERNES (F.R.I.D.A.Y.) - La Guía Maestra
 
-Este proyecto es una base funcional de **VIERNES OS** (inspirado en F.R.I.D.A.Y. de Tony Stark), orientado a una experiencia de **realidad aumentada en tiempo real** con capacidades cognitivas en evolución.
-
-En su estado actual, el sistema está centrado en:
-
-- Captura de video de cámara en baja latencia.
-- Detección visual de manos, rostro y superficies.
-- Composición de overlays AR sobre el feed de cámara.
-- Monitoreo de rendimiento (FPS y latencias).
-- Estructura preparada para memoria semántica y LLM (Gemini), aunque no acoplada aún al loop principal AR.
+Este documento representa la ontología definitiva del proyecto. Responde en profundidad qué es VIERNES, por qué existe, cómo funciona su ingeniería subyacente, qué hace el sistema, su futuro programado y un glosario microscópico de su esquema de archivos.
 
 ---
 
-## Objetivo General
+## 1. ¿Qué es el Proyecto? (Soberanía y Entidad)
 
-Construir una arquitectura modular para un asistente avanzado tipo VIERNES que combine:
-
-1. **Percepción visual** (visión por computador).
-2. **Interfaz aumentada** (HUD y overlays anclados a objetos).
-3. **Cognición** (memoria + razonamiento con modelo de lenguaje).
-4. **Interacción multimodal** (gestos/voz, aún en stubs).
+**VIERNES** es un sistema de Inteligencia Artificial de Realidad Mixta (AR) ejecutado de manera completamente **nativa, offline y soberana (Edge AI)**. 
+Nació inspirado por la entidad tecnológica F.R.I.D.A.Y. de Iron Man, pero se desmarca de ser un "Voice Assistant" clásico. VIERNES es un **Agente Autónomo Reforzado**. No es un chatbot que espera a que le hables; es un sistema óptico asíncrono que observa tu cara, tus manos y tu escritorio, decidiendo cuándo interactuar contigo de manera activa. Todo el procesamiento está diseñado con una premisa extrema de austeridad de hardware: debe ser capaz de ejecutar la inferencia del lenguaje, la visión computacional y el razonamiento en un **procesador CPU sencillo (ARM o Intel) con menos de 6 GB de memoria RAM**, aboliendo para siempre el envío de datos a las APIs corporativas como OpenAI o Google Gemini.
 
 ---
 
-## Flujo Principal de Ejecución
+## 2. ¿Cómo Funciona la Arquitectura? (El Workflow)
 
-Punto de entrada: `viernes/main.py`
+La arquitectura de VIERNES trabaja asíncronamente en bucles o *Pipelines* que comparten memoria mediante exclusión mutua (*Locks*).
 
-1. Se configura el logger central.
-2. Se crea `ARPipeline`.
-3. `ARPipeline` inicia:
-   - `CameraCapture` (captura en hilo separado).
-   - `SpatialTracker` (detección de objetos en frame).
-   - `ARCompositor` (renderizado AR).
-4. Loop por frame:
-   - Obtiene frame más reciente.
-   - Corre tracking de manos/caras/superficies.
-   - Actualiza overlays según lo detectado.
-   - Dibuja HUD con métricas.
-   - Muestra ventana OpenCV.
-5. Salida:
-   - Tecla `q`: cerrar.
-   - Tecla `s`: guardar screenshot.
-   - Tecla `d`: toggle de landmarks debug.
-   - Tecla `h`: toggle de overlays.
+1. **Absorción Sensorial**: Un hilo del Procesador se encarga exclusivamente de secuestrar la cámara web utilizando protocolos en el bajo nivel (`CAP_AVFOUNDATION`), manteniendo un buffer ultracorto (de 2 imágenes máximo). Esto obliga al sistema a nunca tener "imágenes viejas", logrando una latencia biológica casi imperceptible al eludir el *overhead* de OpenCV.
+2. **Razonamiento Espacial Categórico**: Los fotogramas pasan inmediatamente a los motores ligeros vectoriales (*MediaPipe*). Se extraen topografías tridimensionales. Si el sistema ve tus manos, un algoritmo métrico basado en las cajas de contorno (*Bounding Box Area*) sabe instintivamente si tu mano está alejándose o interactuando de cerca. Al escanear tu rostro, anota *468 puntos faciales* exactos (útiles para futuras detecciones emocionales) y segmenta tu escritorio plano usando filtros matemáticos (*Canny Edge*).
+3. **El Cerebro Causal (La Conciencia)**: Toda esta matemática de OpenCV se compila como el "Espacio de Observación". El cerebro artificial tomará estos datos dictando una respuesta según el entrenamiento que recibió leyendo libros de tecnología técnica en su "infancia", decidiendo recuperar información antigua mediante arreglos si lo juzga pertinente.
+4. **Respuesta Aumentada**: Si VIERNES tiene algo que decir, o detecta cansancio y te lanza un aviso, no te abrirá una interfaz web. Renderizará un holograma falso superponiendo matrices (*Capas Alfa*) flotando directamente ancladas a tu monitor o frente a tu rostro en su *Head-Up Display (HUD)* calculado mediante tasas asíncronas para que jamás altere el flujo real de tiempo.
 
 ---
 
-## Estructura General del Repositorio
+## 3. ¿Qué se hace en esta etapa de desarrollo? 
 
-### Archivos de raíz
+En este preciso instante la red neuro-técnica se está desconectando. Se destruyó intencionalmente la conexión comercial (`llm_engine.py` fue borrado) forzando el salto a una red neuronal local construida a mano.
 
-#### `.gitignore`
-Ignora:
-- entorno virtual (`venv/`)
-- cachés y compilados de Python (`__pycache__/`, `*.pyc`, etc.)
-- artefactos de macOS (`.DS_Store`)
-- archivo de variables de entorno (`.env`)
-
-#### `What is it?.md`
-Documento de descripción del proyecto (este archivo).
+El esfuerzo actual de código puro es la **Ingeniería de Datos**: Se ha diseñado un potente *Crawler/Scraper* para devorar la red en la carpeta `viernes/data/`. El código raspa recursivamente y limpia textos extrayendo librerías masivas de Python, matemáticas, tensores (PyTorch) y teoría de Aprendizaje por Refuerzo (RL). El ecosistema luego es filtrado extrayendo el unicode residual, eliminando espacios, forzando saltaciones UTF-8 limpias e implementando *Chunking de 400 palabras con *Overlaps* de 50 palabras* (fragmentación semántica óptima). Todo esto para inyectarle un conocimiento duro de `4.4 Megabytes` técnicos sin grasa basura extra a nuestro transformador casero.
 
 ---
 
-## Paquete principal: `viernes/`
+## 4. ¿Qué se espera del futuro? (La Hoja de Ruta Extrema)
 
-### `viernes/__init__.py`
-Describe el paquete principal y su propósito. No contiene lógica ejecutable.
+Se espera que VIERNES se incube de la amalgama de los archivos descritos hacia estas **tres grandes fases**:
 
-### `viernes/config.py`
-Archivo de configuración global:
-
-- `GEMINI_API_KEY`: clave API para conexión a Gemini.
-- `COGNITIVE_SYSTEM_PROMPT`: prompt de sistema extenso para definir personalidad, tono y reglas de respuesta del asistente.
-
-Notas:
-- Centraliza parámetros de cognición.
-- Actualmente la API key está hardcodeada (en producción debería venir de variables de entorno).
-
-### `viernes/main.py`
-Punto de entrada ejecutable del sistema:
-
-- `bucle_principal()`: arranca logger y `ARPipeline`.
-- `main()`: envuelve ejecución con control de excepciones y código de salida (`0` éxito, `1` error no controlado).
-
-Es el archivo que se debe ejecutar para iniciar el modo AR principal.
-
-### `viernes/requirements.txt`
-Dependencias:
-
-- `opencv-python`: captura y render de video.
-- `numpy`: estructuras y operaciones numéricas.
-- `mediapipe`: detección de manos/cara/segmentación.
-- `lancedb`, `sentence-transformers`: base para memoria vectorial/embeddings.
-- `Pillow`: utilidades de imagen.
-- `google-generativeai`, `google-genai`: integración con Gemini.
-- `scipy`: utilidades matemáticas adicionales.
+- **Cognición Offline Absoluta (BPE + nanoGPT)**: VIERNES correrá la clase lógica del Tokenizador (*minbpe*) para entender el español técnico y leer tu código. La inferencia se amarrará en el hardware usando técnicas agresivas de mitigación como `torch.no_grad()` para evitar que el compilador memorice los perfiles de la red ahorrando 50% de la RAM en el Transformer.
+- **Aprendizaje Interlocutor Implícito (PPO de Gymnasium)**: La cámara no solo es visualización, **es un mecanismo de castigo/recompensa biológico**. VIERNES se instanciará como un entorno de *Gymnasium*. Actuará mediante Reinforcement Learning: Cuando detecte (gracias a flujos ópticos) que has permanecido quieto leyendo, guardará silencio. Si hablas frente el código en crisis, intentará ayudar en el HUD. Si su ayuda calma tus micro-expresiones medidas, la red *PPO* optimizará su ganancia positivamente sin que toques una tecla.
+- **Audífonos Locales Óptimos**: Exterminar al peso pesado de Whisper. Se creará una tubería acústica desde cero usando librerías *Librosa/NumPy*: interceptar energía en frecuencia (VAD/Umbrales RMS adaptativos) esquivando ruidos periféricos, traduciendo eso a *Espectrogramas Mel 80-band* en matrices Numpy alimentándolo en una red convolucional-GRU estricta. Respondiendo mediante audios re-generados por el clásico *Griffin-Lim* vocoder en cero segundos a tu oído físico.
 
 ---
 
-## Subpaquete `viernes/core/` (núcleo de percepción y AR)
-
-### `viernes/core/__init__.py`
-Docstring del subpaquete core. No lógica ejecutable.
-
-### `viernes/core/sensor_fusion.py`
-Contiene dos clases:
-
-#### `SensorFusion`
-- Stub de fusión multisensor.
-- Método `actualizar(frame)` actualmente devuelve el frame sin cambios.
-- Punto preparado para integrar IMU/profundidad/etc.
-
-#### `CameraCapture`
-Captura de cámara optimizada para baja latencia en Mac:
-
-- Usa `cv2.VideoCapture` con backend `CAP_AVFOUNDATION`.
-- Fuerza formato MJPG y resolución 640x480.
-- Ejecuta captura en **hilo dedicado**.
-- Usa buffer de tamaño 2 para mantener el frame más reciente.
-- Expone:
-  - `start()` / `stop()`
-  - `get_frame()` -> `(frame, timestamp_ms, latency_ms)`
-  - `get_stats()` -> métricas agregadas de latencia.
-
-Incluye demo ejecutable local (`_demo_camera_capture`).
-
-### `viernes/core/spatial_tracker.py`
-Módulo principal de tracking visual.
-
-Elementos clave:
-
-- Constantes:
-  - `TRACKER_FRAME_WIDTH = 640`
-  - `TRACKER_FRAME_HEIGHT = 480`
-- `TrackedObject` (dataclass):
-  - `id`, `type`, `bounding_box`, `landmarks`, `confidence`, `world_position_estimate`, `distance_estimate`
-
-#### `SpatialTracker`
-Inicializa modelos de MediaPipe:
-
-- Hands
-- Face Detection
-- Selfie Segmentation
-
-Método principal: `track(frame)`
-
-Procesa el frame para producir lista de objetos detectados:
-
-1. **Manos** (`_procesar_manos`)
-   - Extrae bbox y landmarks.
-   - Estima distancia cualitativa: `CERCA`, `MEDIA`, `LEJOS` según área relativa.
-   - Ajusta confianza mínima según distancia.
-   - Ajusta `scale_factor` dinámicamente.
-
-2. **Caras** (`_procesar_caras`)
-   - Obtiene bbox, keypoints y score de detección.
-
-3. **Superficies** (`_procesar_superficies`)
-   - Convierte a gris, aplica Canny, HoughLinesP y contornos.
-   - Busca contornos aproximados de 4 vértices para superficies planas.
-   - Usa segmentación para suprimir región de persona y mejorar detección de entorno.
-
-Utilidades:
-- `get_anchor_point(obj)`: punto óptimo para anclar overlays.
-- `obtener_metricas_latencia()`: min/max/media/última latencia.
-- `actualizar(frame)`: wrapper de compatibilidad (retorna dict con objetos).
-
-Incluye demo ejecutable (`_demo_spatial_tracker`).
-
-### `viernes/core/ar_compositor.py`
-Sistema de composición de overlays AR.
-
-#### `Overlay` (dataclass)
-Define un elemento gráfico:
-- `id`
-- `content_type` (`TEXT`, `PANEL`, `BOX`, `LABEL`)
-- `position`, `size`, `alpha`, `color`, `text`
-- `anchor_type` (`FIXED` / `WORLD`)
-- `fade_in_ms`, `created_at`
-
-#### `ARCompositor`
-Gestiona overlays activos y los dibuja sobre el frame:
-
-- `add_overlay(overlay)`: agrega/reemplaza.
-- `remove_overlay(id)`: elimina.
-- `update_anchor(id, new_position)`: mueve overlay.
-- `_aplicar_fade(...)`: calcula alpha efectiva con fade-in.
-- `compose(frame)`: dibuja y mezcla capas (`cv2.addWeighted`).
-- `componer(...)`: método legacy compatible con versión previa.
-
-Incluye demo (`_demo_ar_compositor`).
-
-### `viernes/core/ar_pipeline.py`
-Orquestador principal de todo el pipeline AR.
-
-Inicializa:
-- `CameraCapture`
-- `SpatialTracker`
-- `ARCompositor`
-- `PipelineTimer`
-
-Gestión de estado:
-- lock para frame compartido (`_frame_lock`)
-- frame actual (`_current_frame`)
-- flags: debug landmarks, overlays on/off, tracking low-res
-- diccionario de overlays activos por id
-
-Funciones clave:
-
-- `_update_tracking_resolution(fps)`: baja a 320x240 si cae FPS (<20), restaura a 640x480 si sube (>25).
-- `_update_overlays(objetos, frame_shape)`:
-  - HAND: bbox + label con distancia.
-  - FACE: label "VIERNES activo".
-  - SURFACE: panel semitransparente.
-  - Limpia overlays de objetos ya no detectados.
-- `_draw_debug_landmarks(...)`: puntos/líneas de depuración.
-- `_draw_hud(...)`: imprime FPS, latencias y distancia.
-- `_handle_key(...)`: teclas `q`, `s`, `d`, `h`.
-- `get_current_frame()`: copia segura del último frame.
-- `show_response(texto)`: overlay temporal de respuesta textual de VIERNES.
-- `_save_screenshot(frame)`: guarda PNG en carpeta `screenshots/`.
-- `run()`: loop principal completo.
-
-Incluye demo local (`_demo_ar_pipeline`).
-
----
-
-## Subpaquete `viernes/cognitive/` (capa cognitiva)
-
-### `viernes/cognitive/__init__.py`
-Docstring del subpaquete cognitivo.
-
-### `viernes/cognitive/knowledge_system.py`
-Sistema de memoria básico (versión inicial no vectorial):
-
-- `MemoryItem`: contenedor de `content`.
-- `KnowledgeSystem`:
-  - `_memories`: lista interna.
-  - `almacenar(texto)`: guarda un memory item.
-  - `retrieve(query, top_k)`:
-    - prioriza memorias que contengan el texto de consulta.
-    - combina coincidencias + resto (recientes primero).
-  - `recuperar(consulta, k)`: devuelve solo strings.
-
-Es un stub funcional de memoria textual, pensado para evolucionar a embeddings + DB vectorial.
-
-### `viernes/cognitive/llm_engine.py`
-Motor de conversación con Gemini.
-
-Componentes:
-
-- `ConversationContext`:
-  - crea chat con historial,
-  - permite limpiar y recuperar history.
-
-- `CognitiveEngine`:
-  - configura `google.generativeai` con API key.
-  - crea `GenerativeModel` con `gemini-2.5-flash`.
-  - aplica `COGNITIVE_SYSTEM_PROMPT`.
-  - verifica conexión al iniciar.
-  - `ask(prompt)`:
-    - envía mensaje al chat.
-    - retorna `(texto, latencia_ms)`.
-  - `ask_with_memory(query, knowledge_system)`:
-    - recupera hasta 3 memorias.
-    - inyecta contexto en prompt.
-    - delega en `ask`.
-
-Incluye CLI en modo texto (`_run_cli`):
-- escribir `salir` termina.
-- `memoria: ...` guarda conocimiento.
-
-Nota importante:
-- Esta capa cognitiva está implementada, pero no está todavía conectada al loop de `ARPipeline` en `main.py`.
-
----
-
-## Subpaquete `viernes/interaction/` (interacción usuario)
-
-### `viernes/interaction/__init__.py`
-Docstring del subpaquete de interacción.
-
-### `viernes/interaction/gesture_handler.py`
-Stub para interacción por gestos:
-
-- `GestureHandler.__init__`: inicialización y logging.
-- `actualizar(frame)`: validador de entrada + punto de integración futuro.
-
-Actualmente no participa en el flujo principal, pero define la interfaz para integrar comandos gestuales.
-
----
-
-## Subpaquete `viernes/apps/` (aplicaciones de alto nivel)
-
-### `viernes/apps/__init__.py`
-Docstring del subpaquete de aplicaciones.
-
-### `viernes/apps/study_assistant.py`
-Aplicación de ejemplo encima de la capa AR:
-
-- Clase `StudyAssistant`:
-  - `__init__`: logging de inicialización.
-  - `actualizar(frame_ar)`: stub que valida frame y deja punto para lógica de estudio.
-
-No está acoplado aún al loop principal, pero funciona como plantilla de app específica.
-
----
-
-## Subpaquete `viernes/utils/` (infraestructura transversal)
-
-### `viernes/utils/__init__.py`
-Docstring del subpaquete de utilidades.
-
-### `viernes/utils/logger.py`
-Logger central del proyecto:
-
-- Formato con tiempo relativo de alta precisión (`time.perf_counter`).
-- `configurar_logger(...)`: crea y configura logger `viernes`.
-- `get_logger()`: punto recomendado de acceso.
-
-Permite trazabilidad temporal fina en módulos de tiempo real.
-
-### `viernes/utils/timing.py`
-Herramientas de medición:
-
-- `medir_bloque(...)`: context manager para medir bloques.
-- `medir_funcion`: decorador para medir funciones.
-- `PipelineTimer`:
-  - guarda muestras por métrica.
-  - calcula percentiles P50/P95/P99.
-  - emite reporte final por logger o stdout.
-
-Es la base de observabilidad de rendimiento del pipeline.
-
----
-
-## Qué está funcional hoy vs qué está en construcción
-
-### Funcional
-- Captura de cámara en hilo separado.
-- Tracking de manos/caras/superficies.
-- Renderizado AR de overlays.
-- HUD de rendimiento y distancia de manos.
-- Controles por teclado y screenshots.
-
-### Parcial / en evolución
-- Fusión real de múltiples sensores.
-- Memoria vectorial (aún no usa LanceDB/embeddings reales).
-- Integración de LLM con experiencia AR en vivo.
-- Interacción por gestos avanzada.
-- Aplicaciones de alto nivel acopladas al pipeline.
-
----
-
-## Arquitectura lógica (resumen rápido)
-
-- **Entrada visual**: `CameraCapture`
-- **Percepción**: `SpatialTracker`
-- **Render AR**: `ARCompositor`
-- **Orquestación**: `ARPipeline`
-- **Cognición**: `CognitiveEngine` + `KnowledgeSystem`
-- **Apps/UX futura**: `StudyAssistant`, `GestureHandler`
-- **Infraestructura**: `logger`, `timing`, `config`
-
----
-
-## Riesgos técnicos observables y recomendaciones
-
-1. **API key en código**  
-   Mover `GEMINI_API_KEY` a variable de entorno (`.env`) para seguridad.
-
-2. **Acoplamiento pendiente AR + Cognición**  
-   Integrar `CognitiveEngine` con `ARPipeline.show_response()` para respuestas en overlay en tiempo real.
-
-3. **Sistema de conocimiento básico**  
-   Evolucionar `KnowledgeSystem` a embeddings + búsqueda vectorial para relevancia semántica real.
-
-4. **Falta de pruebas automáticas**  
-   Agregar tests unitarios para tracker, compositor y knowledge retrieval.
-
-5. **Uso parcial de dependencias**  
-   Algunas librerías están declaradas pero aún no explotadas en la implementación actual.
-
----
-
-## Conclusión
-
-Este proyecto es un **núcleo sólido de AR en tiempo real** con arquitectura bien separada para crecer hacia un asistente multimodal completo.  
-La base visual está lista y operativa; la capa cognitiva ya tiene componentes funcionales independientes, pero falta conectarla al pipeline central para lograr la experiencia "VIERNES" integral de extremo a extremo.
+## 5. El Glosario del Hardware Arquitectónico (Para Qué Sirve Cada Archivo)
+
+Cada byte y módulo listado desempeña un rol atómico con responsabilidades de hardware profundas:
+
+### Raíz del Proyecto
+- **`.gitignore`**: Barrera de sanidad. Aisla el entorno base `venv/`, basuras binarias y esconde llaves `.env` con privilegios o tokens temporales restantes.
+- **`What is it.md`**:  El documento de manifiesto que estás leyendo ahora. Un sumario fundacional continuo.
+
+### `viernes/` (El Paquete Madre)
+- **`__init__.py`**: Convierte el directorio llanamente en un módulo estándar importable al ambiente virtual Python.
+- **`config.py`**: Centro Nervioso Estático (Variables de Entorno). Almacenaba las llaves externas y guarda lo que alguna vez figuró como "El Alma Analítica": los *Prompts Nativos* que forjaban el comportamiento sereno, profesional y en español colombiano de VIERNES simulando al mayordomo cibernético.
+- **`main.py`**: El cordón conmutador del sistema local. Su única misión es despertar a `ARPipeline` logrando que el software base fluya sin fracturas terminales (manejando las paradas con excepciones de teclas limpiamente).
+- **`requirements.txt`**: Un compendio de módulos duros pesados (`NumPy`, `MediaPipe` `OpenCV-Python`, `LanceDB`, `Torch`, `SciPy`) que se extraen desde el índice PyPI en versiones precompiladas a la arquitectura de W11/Mac.
+
+### `viernes/core/` (La Capa Visual Primordial - Realidad Aumentada)
+- **`sensor_fusion.py`**: Reside la clase fundamental `CameraCapture`. Responsable de interceptar la lente web sin interrumpir al hilo base. Genera estadísticas nativas que son enviadas asíncronamente manteniendo a raya las anomalías del sensor (Ej. bajando a 320x240 en caídas violentas de FPS). Expone `SensorFusion` que es hoy un "Stub" listo para conectar mañana cámaras de temperatura (FLIR) o Giras inerciales (IMUs).
+- **`spatial_tracker.py`**: Motor topográfico. Extrae por fuerza bruta con base de redes neuronales *MediaPipe* cajas posicionales, mallas de *Selfie-Segmentation*, rastreo craneal de 468 nodos y heurísticas isométricas. 
+- **`ar_compositor.py`**: El Gestor de Opacidad. Trabaja controlando diccionarios de estructuras nativas `Overlay`. Este código decide quién pinta píxeles arriba e impone superposiciones alfa mediante pesos y ecuaciones visuales sobre tu cámara sin destrozar la memoria de rasterizado.
+- **`ar_pipeline.py`**: El corazón rítmico que lo abraza todo. Contiene el bucle de latido mientras la aplicación corre. Dibuja las etiquetas (*HUD SystemFPS*), detecta si tus manos se muestran cruzadas en cámara, e interactúa con el teclado (ej: la tecla `s` toma un volcado de captura al disco, la `h` desaparece todas las proyecciones).
+
+### `viernes/cognitive/` (El Futuro Lóbulo Lógico)
+*(Archivo `llm_engine.py` destituido permanentemente hacia el paradigma Offline).*
+- **`knowledge_system.py`**: El núcleo de retención actual de memoria (actualmente en bruto "Stub" almacenando en arreglos planos simulados). A futuro, implementará la tecnología *LanceDB* inyectando memoria semántica convertida a vectores densos mediante *Sentence-Transformers*, programada para aplicar el desgaste de pesos según la Curva biológica del Olvido (Ebbinghaus).
+
+### `viernes/data/` (Neurogénesis: Base del Motor a Escala)
+- **`scripts/download_corpus_raw.py`**: El raspador cibernético que viajó por internet decodificando HTML, extrayendo textos precisos evadiendo los bloqueos SSL para recolectar el "Código Técnico".
+- **`scripts/prepare_corpus.py`**: El limpiador y fragmentador de contexto. Carga la información en sucio, aplica bloqueos REGEX normalizando codificaciones y espaciados eliminando saltos de memoria infinitos, y dividiendo el texto en los célebres fragmentos matemáticos (*Chunks* de 400 y *Overlaps* de 50) para que tu modelo BPE Tokenizer digiera lógicamente.
+- **`corpus_final.txt`**: El cerebro estático. El volcado resultante conteniendo más de 4 Megabytes de los mayores libros modernos de Inteligencia Artificial que será forzado en las venas del modelo naciente.
+- **`research/ (Varios .md)`**: Repositorio de filosofía arquitectónica de tu investigación: Explicita los consumos en RAM, justificaciones para matar Whisper y cómo diseñar el VAD de la máquina.
+
+### `viernes/utils/` (Infraestructura de Instrumentación)
+- **`logger.py`**: Bitácora quirúrgica. Desecha el loggeado rudimentario y aprovecha micro-latencias usando el ultra fino reloj hardware del Procesador Central de tu placa madre para saber absolutamente cuándo arrancó un archivo en fracciones de nano segundo.
+- **`timing.py`**: Context Manager `PipelineTimer`. El contador exacto de percentiles (P50/P95/P99) y varianzas (min/max). Dictamina matemáticamente al momento de cerrar VIERNES cuán castigado fue el sistema en el proceso gráfico (`lat_comp_ms`) vs el lógico.
+
+### `viernes/interaction/` & `viernes/apps/` (Integraciones Superiores)
+- **`interaction/gesture_handler.py`**: Esqueleto destinado a tomar la heurística de los nodos del Tracker para traducirlos a eventos lógicos del Sistema Operativo de la PC real. (Activar volumen apretando dedos, scrollear con la mano al aire).
+- **`apps/study_assistant.py`**: Modelo arquitectónico para futuras "Aplicaciones de 3eros" instaladas en VIERNES (Plugins), encapsulando visiones modulares controladas enfocadas para rutinas y sub-procesos dedicados sin manchar tu Core AR.
